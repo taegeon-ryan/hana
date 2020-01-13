@@ -1,0 +1,8 @@
+{
+  "name": "slackbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/momenthana/slackbot.git",
+  "author": "Hana <momenthana@kakao.com>",
+  "license": "MIT"
+}
