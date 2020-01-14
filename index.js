@@ -19,11 +19,25 @@ rtm.on('member_joined_channel', async (event) => {
 
 rtm.on('message', async (event) => {
   try {
-    const meal = await school.getMeal({ default: '급식이 없습니다' })
     const text = event.text
 
     if (text.includes("급식")) {
+      const meal = await school.getMeal({ default: '급식이 없습니다' })
       reply = await rtm.sendMessage(meal.today, event.channel)
+    }
+    
+    if (text.includes("일정")) {
+      const calendar = await school.getCalendar({ default: '일정 없는 날' })
+      msg = `[${calendar.year}년 ${calendar.month}월]`
+
+      delete calendar.year
+      delete calendar.month
+
+      for(var day in calendar) {
+        msg += `\n[${day}일] ${calendar[day]}`
+      }
+
+      reply = await rtm.sendMessage(msg, event.channel)
     }
 
     console.log('Message sent successfully', reply.ts)
