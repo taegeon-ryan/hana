@@ -31,6 +31,72 @@ rtm.on('member_joined_channel', async (event) => {
   }
 });
 
+const dateCenturyAbbr = [
+  '하루',
+  '이틀',
+  '사흘',
+  '나흘',
+  '닷새',
+  '엿새',
+  '이레',
+  '여드레',
+  '아흐레',
+  '열흘',
+  '열하루',
+  '열이틀',
+  '열사흘',
+  '열나흘',
+  '열닷새',
+  '열엿새',
+  '열이레',
+  '열여드레',
+  '열아흐레',
+  '스무날',
+  '스무하루',
+  '스무이틀',
+  '스무사흘',
+  '스무나흘',
+  '스무닷새',
+  '스무엿새',
+  '스무이레',
+  '스무여드레',
+  '스무아흐레',
+  '그믐'
+]
+
+const dateCentury = [
+  '하룻',
+  '이튿',
+  '사흗',
+  '나흗',
+  '닷샛',
+  '엿샛',
+  '이렛',
+  '여드렛',
+  '아흐렛',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '보름',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  ''
+]
+
 const dateConvert = (text) => {
   let date = new Date()
 
@@ -40,17 +106,29 @@ const dateConvert = (text) => {
     else if (text.includes("후") || text.includes("뒤"))
       date.setDate(date.getDate() + val)
     else
-      date.setDate(date.getDate() + val)
+      date.setDate(val)
   }
 
-  if (text.includes("하루") && text.includes("전") || text.includes("후"))
-    setDate(1)
-  else if (text.includes("이틀") && text.includes("전") || text.includes("후"))
-    setDate(2)
+  if (text.includes("그글피"))
+    date.setDate(date.getDate() + 4)
+  else if (text.includes("글피"))
+    date.setDate(date.getDate() + 3)
   else if (text.includes("모레"))
-    setDate(2)
+    date.setDate(date.getDate() + 2)
   else if (text.includes("내일"))
-    setDate(1)
+    date.setDate(date.getDate() + 1)
+  else if (text.includes("어제"))
+    date.setDate(date.getDate() - 1)
+  else if (text.includes("그저께") || text.includes("그제"))
+    date.setDate(date.getDate() - 2)
+  else if (text.includes("그끄저께") || text.includes("그끄제"))
+    date.setDate(date.getDate() - 3)
+  else
+    for (const key in dateCenturyAbbr)
+      if (text.includes(dateCenturyAbbr[key]) || text.includes(dateCentury[key])) {
+        setDate(Number(key) + 1)
+        return date
+      }
 
   return date
 }
@@ -62,7 +140,8 @@ rtm.on('message', async (event) => {
     if (text.includes("급식")) {
       let date = dateConvert(text)
       let meal = await school.getMeal({ default: '급식이 없습니다' }, date.getFullYear(), date.getMonth()+1)
-      const reply = await rtm.sendMessage(meal[date.getDate()], event.channel)
+      let info = date.getFullYear() + '년 ' + date.getMonth() + 1 + '월 ' + date.getDate() + '일\n' + meal[date.getDate()]
+      const reply = await rtm.sendMessage(info, event.channel)
       console.log('Message sent successfully', reply.ts)
     }
     
