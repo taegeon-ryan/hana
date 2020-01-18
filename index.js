@@ -39,12 +39,17 @@ const dateConvert = (text) => {
       date.setDate(date.getDate() - val)
     else if (text.includes("후") || text.includes("뒤"))
       date.setDate(date.getDate() + val)
+    else
+      date.setDate(date.getDate() + val)
   }
 
-  if (text.includes("하루"))
+  if (text.includes("하루") && text.includes("전") || text.includes("후"))
     setDate(1)
-
-  if (text.includes("이틀"))
+  else if (text.includes("이틀") && text.includes("전") || text.includes("후"))
+    setDate(2)
+  else if (text.includes("내일"))
+    setDate(1)
+  else if (text.includes("모레"))
     setDate(2)
 
   return date
