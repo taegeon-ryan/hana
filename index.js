@@ -67,7 +67,20 @@ const dateConvert = (text) => {
       date.setDate(val)
   }
 
-  if (text.includes('그글피'))
+  function setMonth (val) {
+    if (text.includes('전'))
+      date.setMonth(date.getMonth() - val)
+    else if (text.includes('후') || text.includes('뒤'))
+      date.setMonth(date.getMonth() + val)
+    else
+      date.setMonth(val - 1)
+  }
+
+  if (text.includes('일'))
+    setDate(text.replace(/[^{0-9}]/gi, ''))
+  else if (text.includes('월'))
+    setMonth(text.replace(/[^{0-9}]/gi, ''))
+  else if (text.includes('그글피'))
     date.setDate(date.getDate() + 4)
   else if (text.includes('글피'))
     date.setDate(date.getDate() + 3)
@@ -81,6 +94,14 @@ const dateConvert = (text) => {
     date.setDate(date.getDate() - 2)
   else if (text.includes('그끄저께') || text.includes('그끄제'))
     date.setDate(date.getDate() - 3)
+  else if (text.includes('열흘'))
+    setDate(10)
+  else if (text.includes('스무날'))
+    setDate(20)
+  else if (text.includes('보름'))
+    setDate(15)
+  else if (text.includes('그믐'))
+    setDate(30)
   else
     for (const key in dateCenturyAbbr)
       if (text.includes(dateCenturyAbbr[key]) || text.includes(dateCentury[key])) {
@@ -92,34 +113,23 @@ const dateConvert = (text) => {
           setDate(Number(key) + 1)
 
         return date
-      } else {
-        if (text.includes('열흘'))
-          setDate(10)
-        else if (text.includes('스무날'))
-          setDate(20)
-        else if (text.includes('보름'))
-          setDate(15)
-        else if (text.includes('그믐'))
-          setDate(30)
-        
-        return date
       }
+
+  return date
 }
 
 rtm.on('message', async (event) => {
   try {
     const text = event.text
 
-    async function mealConvert (val) {
+    if (text.includes('급식')) {
       let date = dateConvert(text)
       let meal = await school.getMeal({ default: '급식이 없습니다' }, date.getFullYear(), date.getMonth()+1)
       meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
       let info = date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + meal
-      return await rtm.sendMessage(info, event.channel)
+      reply = await rtm.sendMessage(info, event.channel)
+      console.log('Message sent successfully', reply.ts)
     }
-
-    if (text.includes('급식'))
-      console.log('Message sent successfully', mealConvert().ts)
     
     if (text.includes('일정')) {
       const calendar = await school.getCalendar({ default: '일정 없는 날' })
