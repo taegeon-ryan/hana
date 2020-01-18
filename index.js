@@ -40,28 +40,7 @@ const dateCenturyAbbr = [
   '엿새',
   '이레',
   '여드레',
-  '아흐레',
-  '열흘',
-  '열하루',
-  '열이틀',
-  '열사흘',
-  '열나흘',
-  '열닷새',
-  '열엿새',
-  '열이레',
-  '열여드레',
-  '열아흐레',
-  '스무날',
-  '스무하루',
-  '스무이틀',
-  '스무사흘',
-  '스무나흘',
-  '스무닷새',
-  '스무엿새',
-  '스무이레',
-  '스무여드레',
-  '스무아흐레',
-  '그믐'
+  '아흐레'
 ]
 
 const dateCentury = [
@@ -73,79 +52,76 @@ const dateCentury = [
   '엿샛',
   '이렛',
   '여드렛',
-  '아흐렛',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '보름',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  ''
+  '아흐렛'
 ]
 
 const dateConvert = (text) => {
   let date = new Date()
 
   function setDate (val) {
-    if (text.includes("전"))
+    if (text.includes('전'))
       date.setDate(date.getDate() - val)
-    else if (text.includes("후") || text.includes("뒤"))
+    else if (text.includes('후') || text.includes('뒤'))
       date.setDate(date.getDate() + val)
     else
       date.setDate(val)
   }
 
-  if (text.includes("그글피"))
+  if (text.includes('그글피'))
     date.setDate(date.getDate() + 4)
-  else if (text.includes("글피"))
+  else if (text.includes('글피'))
     date.setDate(date.getDate() + 3)
-  else if (text.includes("모레"))
+  else if (text.includes('모레'))
     date.setDate(date.getDate() + 2)
-  else if (text.includes("내일"))
+  else if (text.includes('내일'))
     date.setDate(date.getDate() + 1)
-  else if (text.includes("어제"))
+  else if (text.includes('어제'))
     date.setDate(date.getDate() - 1)
-  else if (text.includes("그저께") || text.includes("그제"))
+  else if (text.includes('그저께') || text.includes('그제'))
     date.setDate(date.getDate() - 2)
-  else if (text.includes("그끄저께") || text.includes("그끄제"))
+  else if (text.includes('그끄저께') || text.includes('그끄제'))
     date.setDate(date.getDate() - 3)
   else
     for (const key in dateCenturyAbbr)
       if (text.includes(dateCenturyAbbr[key]) || text.includes(dateCentury[key])) {
-        setDate(Number(key) + 1)
+        if (text.includes('열'))
+          setDate(Number(key) + 11)
+        else if (text.includes('스무'))
+          setDate(Number(key) + 21)
+        else
+          setDate(Number(key) + 1)
+
+        return date
+      } else {
+        if (text.includes('열흘'))
+          setDate(10)
+        else if (text.includes('스무날'))
+          setDate(20)
+        else if (text.includes('보름'))
+          setDate(15)
+        else if (text.includes('그믐'))
+          setDate(30)
+        
         return date
       }
-
-  return date
 }
 
 rtm.on('message', async (event) => {
   try {
     const text = event.text
 
-    if (text.includes("급식")) {
+    async function mealConvert (val) {
       let date = dateConvert(text)
       let meal = await school.getMeal({ default: '급식이 없습니다' }, date.getFullYear(), date.getMonth()+1)
-      let info = date.getFullYear() + '년 ' + date.getMonth() + 1 + '월 ' + date.getDate() + '일\n' + meal[date.getDate()]
-      const reply = await rtm.sendMessage(info, event.channel)
-      console.log('Message sent successfully', reply.ts)
+      meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
+      let info = date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + meal
+      return await rtm.sendMessage(info, event.channel)
     }
+
+    if (text.includes('급식'))
+      console.log('Message sent successfully', mealConvert().ts)
     
-    if (text.includes("일정")) {
+    if (text.includes('일정')) {
       const calendar = await school.getCalendar({ default: '일정 없는 날' })
       msg = `[${calendar.year}년 ${calendar.month}월]`
 
