@@ -31,13 +31,33 @@ rtm.on('member_joined_channel', async (event) => {
   }
 });
 
+const dateConvert = (text) => {
+  let date = new Date()
+
+  function setDate (val) {
+    if (text.includes("전"))
+      date.setDate(date.getDate() - val)
+    else if (text.includes("후") || text.includes("뒤"))
+      date.setDate(date.getDate() + val)
+  }
+
+  if (text.includes("하루"))
+    setDate(1)
+
+  if (text.includes("이틀"))
+    setDate(2)
+
+  return date
+}
+
 rtm.on('message', async (event) => {
   try {
     const text = event.text
 
     if (text.includes("급식")) {
-      const meal = await school.getMeal({ default: '급식이 없습니다' })
-      const reply = await rtm.sendMessage(meal.today, event.channel)
+      let date = dateConvert(text)
+      let meal = await school.getMeal({ default: '급식이 없습니다' }, date.getFullYear(), date.getMonth()+1)
+      const reply = await rtm.sendMessage(meal[date.getDate()], event.channel)
       console.log('Message sent successfully', reply.ts)
     }
     
@@ -48,7 +68,7 @@ rtm.on('message', async (event) => {
       delete calendar.year
       delete calendar.month
 
-      for(var day in calendar) {
+      for(let day in calendar) {
         msg += `\n[${day}일] ${calendar[day]}`
       }
 
