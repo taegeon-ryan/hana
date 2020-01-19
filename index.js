@@ -1,12 +1,10 @@
-require('dotenv').config()
-
 const { RTMClient } = require('@slack/rtm-api')
-const rtm = new RTMClient(process.env.SLACK_BOT_TOKEN)
+const rtm = new RTMClient(process.env.slackBotToken)
 
 const School = require('node-school-kr')
 const school = new School()
 
-school.init(eval('School.Type.' + process.env.SCHOOL_TYPE), eval('School.Region.' + process.env.SCHOOL_REGION), process.env.SCHOOL_CODE)
+school.init(eval('School.Type.' + process.env.schoolType), eval('School.Region.' + process.env.schoolRegion), process.env.schoolCode)
 
 const message = [
   '`안녕, 친구들! <@${event.user}> 등장!`',

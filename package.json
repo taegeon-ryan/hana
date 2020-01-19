@@ -1,6 +1,9 @@
 {
   "name": "slackbot",
   "version": "1.0.0",
+  "scripts": {
+    "serve": "node -r dotenv/config index.js"
+  },
   "main": "index.js",
   "repository": "https://github.com/momenthana/slackbot.git",
   "author": "Hana <momenthana@kakao.com>",
