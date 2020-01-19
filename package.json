@@ -2,7 +2,8 @@
   "name": "slackbot",
   "version": "1.0.0",
   "scripts": {
-    "serve": "node -r dotenv/config index.js"
+    "serve": "node -r dotenv/config index.js",
+    "dev": "nodemon -r dotenv/config index.js dotenv_config_path=.env.test"
   },
   "main": "index.js",
   "repository": "https://github.com/momenthana/slackbot.git",
@@ -12,5 +13,8 @@
     "@slack/rtm-api": "^5.0.3",
     "dotenv": "^8.2.0",
     "node-school-kr": "^2.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
