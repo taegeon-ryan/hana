@@ -77,9 +77,9 @@ const dateConvert = (text) => {
   }
 
   if (text.includes('일'))
-    setDate(text.replace(/[^{0-9}]/gi, ''))
+    setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   else if (text.includes('월'))
-    setMonth(text.replace(/[^{0-9}]/gi, ''))
+    setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
   else if (text.includes('그글피'))
     date.setDate(date.getDate() + 4)
   else if (text.includes('글피'))
