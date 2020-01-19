@@ -124,7 +124,7 @@ rtm.on('message', async (event) => {
 
     if (text.includes('급식')) {
       let date = dateConvert(text)
-      let meal = await school.getMeal({ default: '급식이 없습니다' }, date.getFullYear(), date.getMonth()+1)
+      let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth()+1, default: '급식이 없습니다' })
       meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
       let info = date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + meal
       reply = await rtm.sendMessage(info, event.channel)
