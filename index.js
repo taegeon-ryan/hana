@@ -74,7 +74,7 @@ const dateConvert = (text) => {
       date.setMonth(val - 1)
   }
 
-  if (text.includes('일'))
+  if (text.includes('일') && text.replace(/[^{0-9}]/gi, ''))
     setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   else if (text.includes('월'))
     setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
