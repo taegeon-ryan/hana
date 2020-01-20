@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "serve": "node -r dotenv/config index.js",
-    "dev": "nodemon -r dotenv/config index.js dotenv_config_path=.env.test"
+    "dev": "nodemon -r dotenv/config index.js dotenv_config_path=.env.test",
+    "lint": "eslint *.js --fix"
   },
   "main": "index.js",
   "repository": "https://github.com/momenthana/slackbot.git",
@@ -15,6 +16,33 @@
     "node-school-kr": "^2.2.2"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "lint-staged": "^10.0.0",
     "nodemon": "^2.0.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "standard"
+    ],
+    "rules": {},
+    "parserOptions": {}
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
