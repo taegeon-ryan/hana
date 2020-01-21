@@ -4,7 +4,9 @@
   "scripts": {
     "serve": "node -r dotenv/config index.js",
     "dev": "nodemon -r dotenv/config index.js dotenv_config_path=.env.test",
-    "lint": "eslint *.js --fix"
+    "lint": "eslint *.js --fix",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "main": "index.js",
   "repository": "https://github.com/momenthana/slackbot.git",
@@ -23,7 +25,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "lint-staged": "^10.0.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "vuepress": "^1.2.0"
   },
   "eslintConfig": {
     "root": true,
