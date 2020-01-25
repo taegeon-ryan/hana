@@ -76,10 +76,22 @@ const dateConvert = (text) => {
     }
   }
 
+  function setYear (val) {
+    if (text.includes('전')) {
+      date.setFullYear(date.getFullYear() - val)
+    } else if (text.includes('후') || text.includes('뒤')) {
+      date.setFullYear(date.getFullYear() + val)
+    } else {
+      date.setFullYear(val)
+    }
+  }
+
   if (text.includes('일') && text.replace(/[^{0-9}]/gi, '')) {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   } else if (text.includes('월')) {
     setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
+  } else if (text.includes('년')) {
+    setYear(Number(text.replace(/[^{0-9}]/gi, '')))
   } else if (text.includes('그글피')) {
     date.setDate(date.getDate() + 4)
   } else if (text.includes('글피')) {
