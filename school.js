@@ -67,10 +67,18 @@ const dateConvert = (text) => {
   if (text.includes('월')) {
     setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
   }
+
+  if (text.includes('해')) {
+    if ((text.match(/다/g) || []).length) {
+      date.setFullYear(date.getFullYear() + text.match(/다/g).length)
+    } else if ((text.match(/지/g) || []).length) {
+      date.setFullYear(date.getFullYear() - text.match(/지/g).length)
+    }
+  }
   
-  if (text.includes('작년') || text.includes('지난해')) {
+  if (text.includes('작년')) {
     date.setFullYear(date.getFullYear() - 1)
-  } else if (text.includes('재작년') || text.includes('지지난해')) {
+  } else if (text.includes('재작년')) {
     date.setFullYear(date.getFullYear() - 2)
   } else if (text.includes('년')) {
     setYear(Number(text.replace(/[^{0-9}]/gi, '')))
