@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'slackbot',
+  title: 'mealbot',
   description: '',
-  base: '/slackbot'
+  base: '/mealbot'
 }

@@ -1,5 +1,5 @@
 {
-  "name": "slackbot",
+  "name": "mealbot",
   "version": "1.0.0",
   "scripts": {
     "serve": "node -r dotenv/config index.js",
