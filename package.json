@@ -2,14 +2,14 @@
   "name": "mealbot",
   "version": "1.0.0",
   "scripts": {
-    "serve": "node -r dotenv/config index.js",
+    "serve": "node -r dotenv/config index",
     "dev": "nodemon -r dotenv/config index.js dotenv_config_path=.env.test",
     "lint": "eslint *.js --fix",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
   },
   "main": "index.js",
-  "repository": "https://github.com/momenthana/slackbot.git",
+  "repository": "https://github.com/momenthana/mealbot.git",
   "author": "Hana <momenthana@kakao.com>",
   "license": "MIT",
   "dependencies": {
