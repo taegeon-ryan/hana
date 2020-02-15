@@ -1,5 +1,5 @@
 {
-  "name": "mealbot",
+  "name": "Alice",
   "version": "1.0.0",
   "scripts": {
     "serve": "node -r dotenv/config index",
