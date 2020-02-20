@@ -123,14 +123,32 @@ const dateConvert = (text) => {
   return date
 }
 
+const meal = async (text, type) => {
+  const date = dateConvert(text)
+  let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다` })
+  meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
+  let info = date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + meal
+
+  return info
+}
+
 const index = async (text) => {
   let info
 
+  if (text.includes('조식')) {
+    info = meal(text, '조식')
+  }
+
+  if (text.includes('중식')) {
+    info = meal(text, '중식')
+  }
+
+  if (text.includes('석식')) {
+    info = meal(text, '석식')
+  }
+
   if (text.includes('급식')) {
-    const date = dateConvert(text)
-    let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: '급식이 없습니다' })
-    meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
-    info = date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + meal
+    info = meal(text, '급식')
   }
 
   if (text.includes('일정')) {
