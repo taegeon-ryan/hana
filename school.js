@@ -124,12 +124,19 @@ const dateConvert = (text) => {
 }
 
 const meal = async (text, type) => {
+  let info
   const date = dateConvert(text)
   let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다` })
   meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
-  let info = date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + meal
 
-  return info
+  if (meal.includes(`[${type}]`)) {
+    const length = meal.indexOf(`[${type}]`)
+    info = meal.substring(length, meal.indexOf('[', length + 1) !== -1 ? meal.indexOf('[', length + 1) : meal.length)
+  } else {
+    info = meal
+  }
+
+  return date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + info
 }
 
 const index = async (text) => {
