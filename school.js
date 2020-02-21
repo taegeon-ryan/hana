@@ -3,6 +3,8 @@ const school = new School()
 
 school.init(School.Type[process.env.schoolType], School.Region[process.env.schoolRegion], process.env.schoolCode)
 
+const week = ['일', '월', '화', '수', '목', '금', '토']
+
 const dateCenturyAbbr = [
   '하루',
   '이틀',
@@ -136,7 +138,7 @@ const meal = async (text, type) => {
     info = meal
   }
 
-  return date.getFullYear() + '년 ' + (date.getMonth() + 1) + '월 ' + date.getDate() + '일\n' + info
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${week[date.getDay()]})\n${info}`
 }
 
 const index = async (text) => {
