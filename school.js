@@ -1,9 +1,9 @@
 const School = require('node-school-kr')
 const school = new School()
+const fs = require('fs')
+const define = JSON.parse(fs.readFileSync('define.json').toString())
 
 school.init(School.Type[process.env.schoolType], School.Region[process.env.schoolRegion], process.env.schoolCode)
-
-const week = ['일', '월', '화', '수', '목', '금', '토']
 
 const dateCenturyAbbr = [
   '하루',
@@ -138,7 +138,7 @@ const meal = async (text, type) => {
     info = meal
   }
 
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${week[date.getDay()]})\n${info}`
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n${info}`
 }
 
 const index = async (text) => {
