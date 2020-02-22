@@ -5,30 +5,6 @@ const define = JSON.parse(fs.readFileSync('define.json').toString())
 
 school.init(School.Type[process.env.schoolType], School.Region[process.env.schoolRegion], process.env.schoolCode)
 
-const dateCenturyAbbr = [
-  '하루',
-  '이틀',
-  '사흘',
-  '나흘',
-  '닷새',
-  '엿새',
-  '이레',
-  '여드레',
-  '아흐레'
-]
-
-const dateCentury = [
-  '하룻',
-  '이튿',
-  '사흗',
-  '나흗',
-  '닷샛',
-  '엿샛',
-  '이렛',
-  '여드렛',
-  '아흐렛'
-]
-
 const dateConvert = (text) => {
   const date = new Date()
 
@@ -107,8 +83,8 @@ const dateConvert = (text) => {
   } else if (text.includes('그믐')) {
     setDate(30)
   } else {
-    for (const key in dateCenturyAbbr) {
-      if (text.includes(dateCenturyAbbr[key]) || text.includes(dateCentury[key])) {
+    for (const key in define.dateCentury) {
+      if (text.includes(define.dateCentury[key]) || text.includes(define.dateCenturyAbbr[key])) {
         if (text.includes('열')) {
           setDate(Number(key) + 11)
         } else if (text.includes('스무')) {
