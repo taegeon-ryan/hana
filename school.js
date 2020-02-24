@@ -101,50 +101,47 @@ const dateConvert = (text) => {
   return date
 }
 
-const meal = async (text, type) => {
-  let info
-  const date = dateConvert(text)
-  let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다` })
+const meal = async (date, type) => {
+  let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다\n` })
   meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
 
   if (meal.includes(`[${type}]`)) {
     const length = meal.indexOf(`[${type}]`)
-    info = meal.substring(length, meal.indexOf('[', length + 1) !== -1 ? meal.indexOf('[', length + 1) : meal.length)
-  } else {
-    info = meal
+    meal = meal.substring(length, meal.indexOf('[', length + 1) !== -1 ? meal.indexOf('[', length + 1) : meal.length)
   }
 
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n${info}`
+  return meal
 }
 
 const index = async (text) => {
-  let info
+  const date = dateConvert(text)
+  let info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
 
   if (text.includes('조식')) {
-    info = meal(text, '조식')
+    info += await meal(date, '조식')
   }
 
   if (text.includes('중식')) {
-    info = meal(text, '중식')
+    info += await meal(date, '중식')
   }
 
   if (text.includes('석식')) {
-    info = meal(text, '석식')
+    info += await meal(date, '석식')
   }
 
   if (text.includes('급식')) {
-    info = meal(text, '급식')
+    info += await meal(date, '급식')
   }
 
   if (text.includes('일정')) {
     const calendar = await school.getCalendar({ default: '일정 없는 날' })
-    info = `[${calendar.year}년 ${calendar.month}월]`
+    info = `[${calendar.year}년 ${calendar.month}월]\n`
 
     delete calendar.year
     delete calendar.month
 
     for (const day in calendar) {
-      info += `\n[${day}일] ${calendar[day]}`
+      info += `[${day}일] ${calendar[day]}\n`
     }
   }
 
