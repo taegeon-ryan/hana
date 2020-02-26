@@ -2,8 +2,8 @@
   "name": "Alice",
   "version": "1.0.0",
   "scripts": {
-    "serve": "node -r dotenv/config index",
-    "dev": "nodemon -r dotenv/config index.js dotenv_config_path=.env.test",
+    "serve": "node -r dotenv/config src/index",
+    "dev": "nodemon -r dotenv/config src/index.js dotenv_config_path=.env.test",
     "lint": "eslint *.js --fix",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"

@@ -1,7 +1,7 @@
 const School = require('node-school-kr')
 const school = new School()
 const fs = require('fs')
-const define = JSON.parse(fs.readFileSync('define.json').toString())
+const define = JSON.parse(fs.readFileSync('src/define.json').toString())
 
 school.init(School.Type[process.env.schoolType], School.Region[process.env.schoolRegion], process.env.schoolCode)
 
