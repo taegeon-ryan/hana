@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Alice',
+  title: 'Hana',
   description: '',
-  base: '/alice'
+  base: '/hana'
 }
