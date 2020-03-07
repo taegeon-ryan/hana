@@ -1,7 +1,7 @@
+const { RTMClient } = require('@slack/rtm-api')
 const school = require('./school')
 
-const { RTMClient } = require('@slack/rtm-api')
-const rtm = new RTMClient(process.env.slackBotToken)
+const rtm = new RTMClient(process.env.slackbotToken)
 
 rtm.on('member_joined_channel', async (event) => {
   const message = [

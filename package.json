@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "serve": "node -r dotenv/config src/index",
-    "dev": "nodemon -r dotenv/config src/index.js dotenv_config_path=.env.test",
-    "lint": "eslint *.js --fix",
+    "dev": "nodemon -r dotenv/config src/index.js dotenv_config_path=.env.dev",
+    "lint": "eslint src/*.js --fix",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
   },
@@ -16,7 +16,7 @@
     "@slack/rtm-api": "^5.0.3",
     "discord.js": "^11.6.1",
     "dotenv": "^8.2.0",
-    "node-school-kr": "^2.2.2"
+    "school-kr": "^3.0.3"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -31,8 +31,7 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true,
-      "es6": true
+      "node": true
     },
     "extends": [
       "standard"

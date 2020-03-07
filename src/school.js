@@ -1,14 +1,15 @@
-const School = require('node-school-kr')
-const school = new School()
+const School = require('school-kr')
 const fs = require('fs')
+
+const school = new School()
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
 
-school.init(School.Type[process.env.schoolType], School.Region[process.env.schoolRegion], process.env.schoolCode)
+school.init(School.Type[process.env.type], School.Region[process.env.region], process.env.schoolCode)
 
 const dateConvert = (text) => {
   const date = new Date()
 
-  function setDate (val) {
+  const setDate = (val) => {
     if (text.includes('전')) {
       date.setDate(date.getDate() - val)
     } else if (text.includes('후') || text.includes('뒤')) {
@@ -18,7 +19,7 @@ const dateConvert = (text) => {
     }
   }
 
-  function setMonth (val) {
+  const setMonth = (val) => {
     if (text.includes('전')) {
       date.setMonth(date.getMonth() - val)
     } else if (text.includes('후') || text.includes('뒤')) {
@@ -28,7 +29,7 @@ const dateConvert = (text) => {
     }
   }
 
-  function setYear (val) {
+  const setYear = (val) => {
     if (text.includes('전')) {
       date.setFullYear(date.getFullYear() - val)
     } else if (text.includes('후') || text.includes('뒤')) {
@@ -41,7 +42,7 @@ const dateConvert = (text) => {
   if (text.includes('일') && text.replace(/[^{0-9}]/gi, '')) {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   }
-  
+
   if (text.includes('월')) {
     setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
   }
@@ -53,7 +54,7 @@ const dateConvert = (text) => {
       date.setFullYear(date.getFullYear() - text.match(/지/g).length)
     }
   }
-  
+
   if (text.includes('작년')) {
     date.setFullYear(date.getFullYear() - 1)
   } else if (text.includes('재작년')) {
