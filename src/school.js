@@ -116,22 +116,12 @@ const meal = async (date, type) => {
 
 const index = async (text) => {
   const date = dateConvert(text)
-  let info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
+  let match = text.match(/(조식|중식|석식|급식)/)
+  let info
 
-  if (text.includes('조식')) {
-    info += await meal(date, '조식')
-  }
-
-  if (text.includes('중식')) {
-    info += await meal(date, '중식')
-  }
-
-  if (text.includes('석식')) {
-    info += await meal(date, '석식')
-  }
-
-  if (text.includes('급식')) {
-    info += await meal(date, '급식')
+  if (match) {
+    info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
+    info += await meal(date, match[0])
   }
 
   if (text.includes('일정')) {
