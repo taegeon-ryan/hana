@@ -55,26 +55,22 @@ const dateConvert = (text) => {
     }
   }
 
+  let dateExp = [ '(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피' ]
+  let match = text.match(/((그끄저께|그끄제)|(그저께|그제)|어제|오늘|내일|모레|글피|그글피)/)
+  if (match) {
+    for (const i in dateExp) {
+      if (match[0].match(RegExp(dateExp[i]))) {
+        date.setDate(date.getDate() - 3 + Number(i))
+      }
+    }
+  }
+
   if (text.includes('작년')) {
     date.setFullYear(date.getFullYear() - 1)
   } else if (text.includes('재작년')) {
     date.setFullYear(date.getFullYear() - 2)
   } else if (text.includes('년')) {
     setYear(Number(text.replace(/[^{0-9}]/gi, '')))
-  } else if (text.includes('그글피')) {
-    date.setDate(date.getDate() + 4)
-  } else if (text.includes('글피')) {
-    date.setDate(date.getDate() + 3)
-  } else if (text.includes('모레')) {
-    date.setDate(date.getDate() + 2)
-  } else if (text.includes('내일')) {
-    date.setDate(date.getDate() + 1)
-  } else if (text.includes('어제')) {
-    date.setDate(date.getDate() - 1)
-  } else if (text.includes('그저께') || text.includes('그제')) {
-    date.setDate(date.getDate() - 2)
-  } else if (text.includes('그끄저께') || text.includes('그끄제')) {
-    date.setDate(date.getDate() - 3)
   } else if (text.includes('열흘')) {
     setDate(10)
   } else if (text.includes('스무날')) {
