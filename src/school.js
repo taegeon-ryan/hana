@@ -56,12 +56,9 @@ const dateConvert = (text) => {
   }
 
   let dateExp = [ '(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피' ]
-  let match = text.match(/((그끄저께|그끄제)|(그저께|그제)|어제|오늘|내일|모레|글피|그글피)/)
-  if (match) {
-    for (const i in dateExp) {
-      if (match[0].match(RegExp(dateExp[i]))) {
-        date.setDate(date.getDate() - 3 + Number(i))
-      }
+  for (const i in dateExp) {
+    if (text.match(RegExp(dateExp[i]))) {
+      date.setDate(date.getDate() - 3 + Number(i))
     }
   }
 
