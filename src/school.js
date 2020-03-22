@@ -117,67 +117,29 @@ const index = async (text) => {
       const search = await new School().search(School.Region[key], text.match(/.*(초|중|고|학교|유치원)/)[0])
       search.forEach(e => {
         let addr
-        switch (key) {
-          case 'SEOUL':
-            addr = '서울특별시교육청 소재'
-            break
-          case 'INCHEON':
-            addr = '인천광역시교육청 소재'
-            break
-          case 'BUSAN':
-            addr = '부산광역시교육청 소재'
-            break
-          case 'GWANGJU':
-            addr = '광주광역시교육청 소재'
-            break
-          case 'DAEJEON':
-            addr = '대전광역시교육청 소재'
-            break
-          case 'DEAGU':
-            addr = '대구광역시교육청 소재'
-            break
-          case 'SEJONG':
-            addr = '세종특별시교육청 소재'
-            break
-          case 'ULSAN':
-            addr = '울산광역시교육청 소재'
-            break
-          case 'GYEONGGI':
-            addr = '경기도교육청 소재'
-            break
-          case 'KANGWON':
-            addr = '강원도교육청 소재'
-            break
-          case 'CHUNGBUK':
-            addr = '충청북도교육청 소재'
-            break
-          case 'CHUNGNAM':
-            addr = '충청남도교육청 소재'
-            break
-          case 'GYEONGBUK':
-            addr = '경상북도교육청 소재'
-            break
-          case 'GYEONGNAM':
-            addr = '경상남도교육청 소재'
-            break
-          case 'JEONBUK':
-            addr = '전라북도교육청 소재'
-            break
-          case 'JEONNAM':
-            addr = '전라남도교육청 소재'
-            break
-          case 'JEJU':
-            addr = '제주특별자치도교육청 소재'
-            break
-          default:
-            addr = '교육청 소재지 파악불가'
-            break
-        }
+        key === 'SEOUL' ? addr = '서울특별시'
+          : key === 'INCHEON' ? addr = '인천광역시'
+            : key === 'BUSAN' ? addr = '부산광역시'
+              : key === 'GWANGJU' ? addr = '광주광역시'
+                : key === 'DAEJEON' ? addr = '대전광역시'
+                  : key === 'DEAGU' ? addr = '대구광역시'
+                    : key === 'SEJONG' ? addr = '세종특별시'
+                      : key === 'ULSAN' ? addr = '울산광역시'
+                        : key === 'GYEONGGI' ? addr = '경기도'
+                          : key === 'KANGWON' ? addr = '강원도'
+                            : key === 'CHUNGBUK' ? addr = '충청북도'
+                              : key === 'CHUNGNAM' ? addr = '충청남도'
+                                : key === 'GYEONGBUK' ? addr = '경상북도'
+                                  : key === 'GYEONGNAM' ? addr = '경상남도'
+                                    : key === 'JEONBUK' ? addr = '전라북도'
+                                      : key === 'JEONNAM' ? addr = '전라남도'
+                                        : key === 'JEJU' ? addr = '제주특별자치도'
+                                          : addr = null
         result.push({ name: e.name, schoolCode: e.schoolCode, schoolRegion: addr, address: e.address })
       })
     }
     for (const key in result) {
-      info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion})`
+      info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
     }
   }
 
