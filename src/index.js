@@ -6,7 +6,7 @@ const message = JSON.parse(fs.readFileSync('src/message.json').toString())
 const rtm = new RTMClient(process.env.slackbotToken)
 
 rtm.on('member_joined_channel', async (event) => {
-  let msg = []
+  const msg = []
   message.joined.forEach(element => {
     msg.push(element.replace('${event.user}', `${event.user}`))
   })

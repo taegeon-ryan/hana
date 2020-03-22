@@ -55,7 +55,7 @@ const dateConvert = (text) => {
     }
   }
 
-  let dateExp = [ '(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피' ]
+  const dateExp = ['(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피']
   for (const i in dateExp) {
     if (text.match(RegExp(dateExp[i]))) {
       date.setDate(date.getDate() - 3 + Number(i))
@@ -108,10 +108,81 @@ const meal = async (date, type) => {
 }
 
 const index = async (text) => {
-  const date = dateConvert(text)
-  let match = text.match(/(조식|중식|석식|급식)/)
   let info
 
+  if (text.match(/검색/)) {
+    info = ''
+    const result = []
+    for (const key in School.Region) {
+      const search = await new School().search(School.Region[key], text.match(/.*(초|중|고|학교|유치원)/)[0])
+      search.forEach(e => {
+        let addr
+        switch (key) {
+          case 'SEOUL':
+            addr = '서울특별시교육청 소재'
+            break
+          case 'INCHEON':
+            addr = '인천광역시교육청 소재'
+            break
+          case 'BUSAN':
+            addr = '부산광역시교육청 소재'
+            break
+          case 'GWANGJU':
+            addr = '광주광역시교육청 소재'
+            break
+          case 'DAEJEON':
+            addr = '대전광역시교육청 소재'
+            break
+          case 'DEAGU':
+            addr = '대구광역시교육청 소재'
+            break
+          case 'SEJONG':
+            addr = '세종특별시교육청 소재'
+            break
+          case 'ULSAN':
+            addr = '울산광역시교육청 소재'
+            break
+          case 'GYEONGGI':
+            addr = '경기도교육청 소재'
+            break
+          case 'KANGWON':
+            addr = '강원도교육청 소재'
+            break
+          case 'CHUNGBUK':
+            addr = '충청북도교육청 소재'
+            break
+          case 'CHUNGNAM':
+            addr = '충청남도교육청 소재'
+            break
+          case 'GYEONGBUK':
+            addr = '경상북도교육청 소재'
+            break
+          case 'GYEONGNAM':
+            addr = '경상남도교육청 소재'
+            break
+          case 'JEONBUK':
+            addr = '전라북도교육청 소재'
+            break
+          case 'JEONNAM':
+            addr = '전라남도교육청 소재'
+            break
+          case 'JEJU':
+            addr = '제주특별자치도교육청 소재'
+            break
+          default:
+            addr = '교육청 소재지 파악불가'
+            break
+        }
+        result.push({ name: e.name, schoolCode: e.schoolCode, schoolRegion: addr, address: e.address })
+      })
+    }
+    for (const key in result) {
+      info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion})`
+    }
+  }
+
+  const date = dateConvert(text)
+  const match = text.match(/(조식|중식|석식|급식)/)
   if (match) {
     info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
     info += await meal(date, match[0])
