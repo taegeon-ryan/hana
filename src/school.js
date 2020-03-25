@@ -201,14 +201,19 @@ const index = async (text, channel) => {
     if (!data.slack[channel]) {
       info = "채널에 등록된 학교가 없습니다!"
     } else {
-      const calendar = await school.getCalendar({ default: '일정 없는 날' })
+      const calendar = await school.getCalendar({ default: null })
       info = `[${calendar.year}년 ${calendar.month}월]\n`
+      console.log(calendar)
 
       delete calendar.year
       delete calendar.month
+      delete calendar.day
+      delete calendar.today
 
       for (const day in calendar) {
-        info += `[${day}일] ${calendar[day]}\n`
+        if (calendar[day]) {
+          info += `[${day}일] ${calendar[day]}\n`
+        }
       }
     }
   }
