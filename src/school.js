@@ -1,10 +1,20 @@
 const School = require('school-kr')
 const fs = require('fs')
 
-const school = new School()
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
+const tmp = {}
 
-school.init(School.Type[process.env.type], School.Region[process.env.region], process.env.schoolCode)
+const load = () => {
+  try {
+    return JSON.parse(fs.readFileSync('src/data.json').toString())
+  } catch {
+    return {}
+  }
+}
+
+const save = (info) => {
+  fs.writeFileSync('src/data.json', JSON.stringify(info))
+}
 
 const dateConvert = (text) => {
   const date = new Date()
@@ -95,7 +105,7 @@ const dateConvert = (text) => {
   return date
 }
 
-const meal = async (date, type) => {
+const meal = async (school, date, type) => {
   let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다\n` })
   meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
 
@@ -107,7 +117,7 @@ const meal = async (date, type) => {
   return meal
 }
 
-const index = async (text) => {
+const index = async (text, channel) => {
   let info
 
   if (text.match(/검색/)) {
@@ -135,30 +145,71 @@ const index = async (text) => {
                                       : key === 'JEONNAM' ? addr = '전라남도'
                                         : key === 'JEJU' ? addr = '제주특별자치도'
                                           : addr = null
-        result.push({ name: e.name, schoolCode: e.schoolCode, schoolRegion: addr, address: e.address })
+        let type = 'HIGH'
+        if (e.name.match(/중학교/)) {
+          type = 'MIDDLE'
+        } else if (e.name.match(/초등학교/)) {
+          type = 'ELEMENTARY'
+        } else if (e.name.match(/유치원/)) {
+          type = 'KINDERGARTEN'
+        }
+        result.push({ name: e.name, type: type, schoolCode: e.schoolCode, region: key, schoolRegion: addr, address: e.address })
       })
     }
     for (const key in result) {
       info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
+      tmp[channel] = result
     }
+  }
+
+  if (text.match(/등록/)) {
+    const data = load()
+    if (!tmp[channel]) {
+      info = '채널에서 검색된 학교가 없어!'
+    } else {
+      let i = tmp[channel][Number(text.replace(/[^{0-9}]/gi, '')) - 1]
+      if (!data.slack) {
+        data.slack = {}
+      }
+      info = `${i.name}를(을) 채널에 등록했어!`
+      data.slack[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
+    }
+    save(data)
   }
 
   const date = dateConvert(text)
   const match = text.match(/(조식|중식|석식|급식)/)
   if (match) {
-    info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
-    info += await meal(date, match[0])
+    const data = load()
+    const school = new School()
+    school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
+    if (!data.slack) {
+      data.slack = {}
+    }
+    if (!data.slack[channel]) {
+      info = "채널에 등록된 학교가 없습니다!"
+    } else {
+      info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
+      info += await meal(school, date, match[0])
+    }
   }
 
   if (text.includes('일정')) {
-    const calendar = await school.getCalendar({ default: '일정 없는 날' })
-    info = `[${calendar.year}년 ${calendar.month}월]\n`
+    const data = load()
+    const school = new School()
+    school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
+    if (!data.slack[channel]) {
+      info = "채널에 등록된 학교가 없습니다!"
+    } else {
+      const calendar = await school.getCalendar({ default: '일정 없는 날' })
+      info = `[${calendar.year}년 ${calendar.month}월]\n`
 
-    delete calendar.year
-    delete calendar.month
+      delete calendar.year
+      delete calendar.month
 
-    for (const day in calendar) {
-      info += `[${day}일] ${calendar[day]}\n`
+      for (const day in calendar) {
+        info += `[${day}일] ${calendar[day]}\n`
+      }
     }
   }
 

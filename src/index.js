@@ -22,7 +22,7 @@ rtm.on('member_joined_channel', async (event) => {
 
 rtm.on('message', async (event) => {
   try {
-    const info = await school(event.text)
+    const info = await school(event.text, event.channel)
 
     if (info) {
       const reply = await rtm.sendMessage(info, event.channel)
