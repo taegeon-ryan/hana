@@ -123,42 +123,46 @@ const index = async (text, channel) => {
   if (text.match(/검색/)) {
     info = ''
     const result = []
-    for (const key in School.Region) {
-      const search = await new School().search(School.Region[key], text.match(/.*(초|중|고|학교|유치원)/)[0])
-      search.forEach(e => {
-        let addr
-        key === 'SEOUL' ? addr = '서울특별시'
-          : key === 'INCHEON' ? addr = '인천광역시'
-            : key === 'BUSAN' ? addr = '부산광역시'
-              : key === 'GWANGJU' ? addr = '광주광역시'
-                : key === 'DAEJEON' ? addr = '대전광역시'
-                  : key === 'DEAGU' ? addr = '대구광역시'
-                    : key === 'SEJONG' ? addr = '세종특별시'
-                      : key === 'ULSAN' ? addr = '울산광역시'
-                        : key === 'GYEONGGI' ? addr = '경기도'
-                          : key === 'KANGWON' ? addr = '강원도'
-                            : key === 'CHUNGBUK' ? addr = '충청북도'
-                              : key === 'CHUNGNAM' ? addr = '충청남도'
-                                : key === 'GYEONGBUK' ? addr = '경상북도'
-                                  : key === 'GYEONGNAM' ? addr = '경상남도'
-                                    : key === 'JEONBUK' ? addr = '전라북도'
-                                      : key === 'JEONNAM' ? addr = '전라남도'
-                                        : key === 'JEJU' ? addr = '제주특별자치도'
-                                          : addr = null
-        let type = 'HIGH'
-        if (e.name.match(/중학교/)) {
-          type = 'MIDDLE'
-        } else if (e.name.match(/초등학교/)) {
-          type = 'ELEMENTARY'
-        } else if (e.name.match(/유치원/)) {
-          type = 'KINDERGARTEN'
-        }
-        result.push({ name: e.name, type: type, schoolCode: e.schoolCode, region: key, schoolRegion: addr, address: e.address })
-      })
-    }
-    for (const key in result) {
-      info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
-      tmp[channel] = result
+    if (text.match(/.*(초|중|고|학교|유치원)/)) {
+      for (const key in School.Region) {
+        const search = await new School().search(School.Region[key], text.match(/.*(초|중|고|학교|유치원)/)[0])
+        search.forEach(e => {
+          let addr
+          key === 'SEOUL' ? addr = '서울특별시'
+            : key === 'INCHEON' ? addr = '인천광역시'
+              : key === 'BUSAN' ? addr = '부산광역시'
+                : key === 'GWANGJU' ? addr = '광주광역시'
+                  : key === 'DAEJEON' ? addr = '대전광역시'
+                    : key === 'DEAGU' ? addr = '대구광역시'
+                      : key === 'SEJONG' ? addr = '세종특별시'
+                        : key === 'ULSAN' ? addr = '울산광역시'
+                          : key === 'GYEONGGI' ? addr = '경기도'
+                            : key === 'KANGWON' ? addr = '강원도'
+                              : key === 'CHUNGBUK' ? addr = '충청북도'
+                                : key === 'CHUNGNAM' ? addr = '충청남도'
+                                  : key === 'GYEONGBUK' ? addr = '경상북도'
+                                    : key === 'GYEONGNAM' ? addr = '경상남도'
+                                      : key === 'JEONBUK' ? addr = '전라북도'
+                                        : key === 'JEONNAM' ? addr = '전라남도'
+                                          : key === 'JEJU' ? addr = '제주특별자치도'
+                                            : addr = null
+          let type = 'HIGH'
+          if (e.name.match(/중학교/)) {
+            type = 'MIDDLE'
+          } else if (e.name.match(/초등학교/)) {
+            type = 'ELEMENTARY'
+          } else if (e.name.match(/유치원/)) {
+            type = 'KINDERGARTEN'
+          }
+          result.push({ name: e.name, type: type, schoolCode: e.schoolCode, region: key, schoolRegion: addr, address: e.address })
+        })
+      }
+      for (const key in result) {
+        info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
+        tmp[channel] = result
+      }
+    } else {
+      info = '명칭을 정확하게 입력해줘!'
     }
   }
 
@@ -203,7 +207,6 @@ const index = async (text, channel) => {
     } else {
       const calendar = await school.getCalendar({ default: null })
       info = `[${calendar.year}년 ${calendar.month}월]\n`
-      console.log(calendar)
 
       delete calendar.year
       delete calendar.month
