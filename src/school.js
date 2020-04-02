@@ -65,19 +65,21 @@ const dateConvert = (text) => {
     }
   }
 
-  const dateExp = ['(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피']
-  for (const i in dateExp) {
+  let dateExp = ['(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피']
+  for (let i in dateExp) {
     if (text.match(RegExp(dateExp[i]))) {
       date.setDate(date.getDate() - 3 + Number(i))
     }
   }
-
-  if (text.includes('작년')) {
-    date.setFullYear(date.getFullYear() - 1)
-  } else if (text.includes('재작년')) {
-    date.setFullYear(date.getFullYear() - 2)
-  } else if (text.includes('년')) {
+  
+  if (text.includes('년')) {
     setYear(Number(text.replace(/[^{0-9}]/gi, '')))
+    dateExp = ['재재작년', '재작년', '작년', '올해', '내년', '후년', '(내후년|후후년)']
+    for (let i in dateExp) {
+      if (text.match(RegExp(dateExp[i]))) {
+        date.setFullYear(date.getFullYear() - 2 + Number(i))
+      }
+    }
   } else if (text.includes('열흘')) {
     setDate(10)
   } else if (text.includes('스무날')) {
@@ -186,13 +188,13 @@ const index = async (text, channel) => {
   if (match) {
     const data = load()
     const school = new School()
-    school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
     if (!data.slack) {
       data.slack = {}
     }
     if (!data.slack[channel]) {
       info = "채널에 등록된 학교가 없습니다!"
     } else {
+      school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
       info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
       info += await meal(school, date, match[0])
     }
