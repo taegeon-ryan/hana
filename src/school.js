@@ -77,7 +77,7 @@ const dateConvert = (text) => {
     dateExp = ['재재작년', '재작년', '작년', '올해', '내년', '후년', '(내후년|후후년)']
     for (let i in dateExp) {
       if (text.match(RegExp(dateExp[i]))) {
-        date.setFullYear(date.getFullYear() - 2 + Number(i))
+        date.setFullYear(date.getFullYear() - 3 + Number(i))
       }
     }
   } else if (text.includes('열흘')) {
