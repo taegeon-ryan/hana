@@ -177,7 +177,7 @@ const index = async (text, channel) => {
       if (!data.slack) {
         data.slack = {}
       }
-      info = `${i.name}를(을) 채널에 등록했어!`
+      info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
       data.slack[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
     }
     save(data)
@@ -192,7 +192,7 @@ const index = async (text, channel) => {
       data.slack = {}
     }
     if (!data.slack[channel]) {
-      info = "채널에 등록된 학교가 없습니다!"
+      info = "채널에 등록된 학교나 유치원이 없어!"
     } else {
       school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
       info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
@@ -205,7 +205,7 @@ const index = async (text, channel) => {
     const school = new School()
     school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
     if (!data.slack[channel]) {
-      info = "채널에 등록된 학교가 없습니다!"
+      info = "채널에 등록된 학교나 유치원이 없어!"
     } else {
       const calendar = await school.getCalendar({ default: null })
       info = `[${calendar.year}년 ${calendar.month}월]\n`

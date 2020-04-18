@@ -9,7 +9,7 @@
     "docs:build": "vuepress build docs"
   },
   "main": "index.js",
-  "repository": "https://github.com/momenthana/mealbot.git",
+  "repository": "https://github.com/momenthana/hana.git",
   "author": "Hana <momenthana@kakao.com>",
   "license": "MIT",
   "dependencies": {
