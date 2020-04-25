@@ -16,7 +16,7 @@
     "@slack/rtm-api": "^5.0.3",
     "discord.js": "^11.6.1",
     "dotenv": "^8.2.0",
-    "school-kr": "^3.0.3"
+    "school-kr": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

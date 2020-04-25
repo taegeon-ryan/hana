@@ -1,4 +1,5 @@
 const School = require('school-kr')
+const school = new School()
 const fs = require('fs')
 
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
@@ -107,7 +108,7 @@ const dateConvert = (text) => {
   return date
 }
 
-const meal = async (school, date, type) => {
+const meal = async (date, type) => {
   let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다\n` })
   meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
 
@@ -187,7 +188,6 @@ const index = async (text, channel) => {
   const match = text.match(/(조식|중식|석식|급식)/)
   if (match) {
     const data = load()
-    const school = new School()
     if (!data.slack) {
       data.slack = {}
     }
@@ -196,13 +196,12 @@ const index = async (text, channel) => {
     } else {
       school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
       info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
-      info += await meal(school, date, match[0])
+      info += await meal(date, match[0])
     }
   }
 
   if (text.includes('일정')) {
     const data = load()
-    const school = new School()
     school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
     if (!data.slack[channel]) {
       info = "채널에 등록된 학교나 유치원이 없어!"
