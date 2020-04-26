@@ -7,14 +7,14 @@ const tmp = {}
 
 const load = () => {
   try {
-    return JSON.parse(fs.readFileSync('src/data.json').toString())
+    return JSON.parse(fs.readFileSync('src/data/slack.json').toString())
   } catch {
     return {}
   }
 }
 
 const save = (info) => {
-  fs.writeFileSync('src/data.json', JSON.stringify(info))
+  fs.writeFileSync('src/data/slack.json', JSON.stringify(info))
 }
 
 const dateConvert = (text) => {
@@ -175,11 +175,8 @@ const index = async (text, channel) => {
       info = '채널에서 검색된 학교가 없어!'
     } else {
       let i = tmp[channel][Number(text.replace(/[^{0-9}]/gi, '')) - 1]
-      if (!data.slack) {
-        data.slack = {}
-      }
       info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
-      data.slack[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
+      data[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
     }
     save(data)
   }
@@ -188,13 +185,10 @@ const index = async (text, channel) => {
   const match = text.match(/(조식|중식|석식|급식)/)
   if (match) {
     const data = load()
-    if (!data.slack) {
-      data.slack = {}
-    }
-    if (!data.slack[channel]) {
+    if (!data[channel]) {
       info = "채널에 등록된 학교나 유치원이 없어!"
     } else {
-      school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
+      school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
       info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
       info += await meal(date, match[0])
     }
@@ -202,8 +196,8 @@ const index = async (text, channel) => {
 
   if (text.includes('일정')) {
     const data = load()
-    school.init(School.Type[data.slack[channel].type], School.Region[data.slack[channel].region], data.slack[channel].schoolCode)
-    if (!data.slack[channel]) {
+    school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
+    if (!data[channel]) {
       info = "채널에 등록된 학교나 유치원이 없어!"
     } else {
       const calendar = await school.getCalendar({ default: null })
