@@ -3,7 +3,7 @@ const school = new School()
 const fs = require('fs')
 
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
-const tmp = {}
+const search = {}
 
 const load = () => {
   try {
@@ -162,19 +162,20 @@ const index = async (text, channel) => {
       }
       for (const key in result) {
         info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
-        tmp[channel] = result
+        search[channel] = result
       }
+      info += `\n'1번 등록해줘'처럼 말해주면 채널에 등록해줄게`
     } else {
-      info = '명칭을 정확하게 입력해줘!'
+      info = '학교나 유치원 이름을 정확하게 입력해줘!'
     }
   }
 
   if (text.match(/등록/)) {
     const data = load()
-    if (!tmp[channel]) {
-      info = '채널에서 검색된 학교가 없어!'
+    if (!search[channel]) {
+      info = `채널에서 검색된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
     } else {
-      let i = tmp[channel][Number(text.replace(/[^{0-9}]/gi, '')) - 1]
+      let i = search[channel][Number(text.replace(/[^{0-9}]/gi, '')) - 1]
       info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
       data[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
     }
@@ -186,7 +187,7 @@ const index = async (text, channel) => {
   if (match) {
     const data = load()
     if (!data[channel]) {
-      info = "채널에 등록된 학교나 유치원이 없어!"
+      info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
     } else {
       school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
       info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
@@ -198,7 +199,7 @@ const index = async (text, channel) => {
     const data = load()
     school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
     if (!data[channel]) {
-      info = "채널에 등록된 학교나 유치원이 없어!"
+      info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
     } else {
       const calendar = await school.getCalendar({ default: null })
       info = `[${calendar.year}년 ${calendar.month}월]\n`
