@@ -8,13 +8,12 @@ const slack = new RTMClient(process.env.slackToken)
 const discord = new Discord.Client();
 
 if (process.env.discordToken) {
-  discord.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-  });
-  
-  discord.on('message', msg => {
-    if (msg.content === 'ping') {
-      msg.reply('Pong!');
+  discord.on('message', async msg => {
+    console.log(msg.channel.id);
+    const info = await school(msg.content, msg.channel.id);
+    
+    if (info) {
+      msg.reply(info);
     }
   });
 
@@ -37,7 +36,7 @@ if (process.env.slackToken) {
     }
   })
   
-  slack.on('message', async (event) => {
+  slack.on('message', async event => {
     try {
       const info = await school(event.text, event.channel)
   
