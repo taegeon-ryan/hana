@@ -9,11 +9,14 @@ const discord = new Discord.Client();
 
 if (process.env.discordToken) {
   discord.on('message', async msg => {
-    console.log(msg.channel.id);
-    const info = await school(msg.content, msg.channel.id);
-    
-    if (info) {
-      msg.reply(info);
+    try {
+      const info = await school(msg.content, msg.channel.id);
+      
+      if (info) {
+        msg.reply(info);
+      }
+    } catch (error) {
+      console.log('An error occurred', error)
     }
   });
 
