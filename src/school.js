@@ -53,7 +53,7 @@ const dateConvert = (text) => {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   }
 
-  if (text.includes('월')) {
+  if (text.includes('월') || text.includes('달')) {
     setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
   }
 
