@@ -127,7 +127,8 @@ const index = async (text, channel) => {
       const result = []
       if (text.match(/.*(초|중|고|학교|유치원)/)) {
         for (let key in School.Region) {
-          const search = await new School().search(School.Region[key], text.match(/.*(초|중|고|학교|유치원)/)[0])
+          splitText = text.match(/.*(초|중|고|학교|유치원)/)[0].split(' ')
+          const search = await new School().search(School.Region[key], splitText[splitText.length - 1])
           search.forEach(e => {
             let addr
             for (const name in define.region) {
