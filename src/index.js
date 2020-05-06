@@ -11,12 +11,12 @@ if (process.env.discordToken) {
   discord.on('message', async msg => {
     try {
       const info = await school(msg.content, msg.channel.id);
-      
       if (info) {
-        msg.reply(info);
+        msg.reply(info)
+        console.log('Discord', msg.channel.id, msg.content)
       }
     } catch (error) {
-      console.log('An error occurred', error)
+      console.warn(error)
     }
   });
 
@@ -35,7 +35,7 @@ if (process.env.slackToken) {
       const reply = await slack.sendMessage(msg[random], event.channel)
       console.log('Message sent successfully', reply.ts)
     } catch (error) {
-      console.log('An error occurred', error)
+      console.warn(error)
     }
   })
   
@@ -45,10 +45,10 @@ if (process.env.slackToken) {
   
       if (info) {
         const reply = await slack.sendMessage(info, event.channel)
-        console.log('Message sent successfully', reply.ts)
+        console.log('Slack', event.channel, event.text)
       }
     } catch (error) {
-      console.log('An error occurred', error)
+      console.warn(error)
     }
   });
   
