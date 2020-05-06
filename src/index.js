@@ -5,22 +5,22 @@ const fs = require('fs')
 const message = JSON.parse(fs.readFileSync('src/message.json').toString())
 
 const slack = new RTMClient(process.env.slackToken)
-const discord = new Discord.Client();
+const discord = new Discord.Client()
 
 if (process.env.discordToken) {
   discord.on('message', async msg => {
     try {
-      const info = await school(msg.content, msg.channel.id);
+      const info = await school(msg.content, msg.channel.id)
       if (info) {
-        msg.reply(info)
-        console.log('Discord', msg.channel.id, msg.content)
+        await msg.reply(info)
+        console.log('Discord', msg.channel.id, '\n' + msg.content, '\n' + info)
       }
     } catch (error) {
       console.warn(error)
     }
   });
 
-  discord.login(process.env.discordToken);
+  discord.login(process.env.discordToken)
 }
 
 if (process.env.slackToken) {
@@ -32,8 +32,8 @@ if (process.env.slackToken) {
   
     try {
       const random = Math.floor(Math.random() * msg.length)
-      const reply = await slack.sendMessage(msg[random], event.channel)
-      console.log('Message sent successfully', reply.ts)
+      await slack.sendMessage('Slack', event.channel, msg[random])
+      console.log('Slack', event.channel, '\nOut', msg[random])
     } catch (error) {
       console.warn(error)
     }
@@ -44,8 +44,8 @@ if (process.env.slackToken) {
       const info = await school(event.text, event.channel)
   
       if (info) {
-        const reply = await slack.sendMessage(info, event.channel)
-        console.log('Slack', event.channel, event.text)
+        await slack.sendMessage(info, event.channel)
+        console.log('Slack', event.channel, '\n' + event.text, '\n' + info)
       }
     } catch (error) {
       console.warn(error)
