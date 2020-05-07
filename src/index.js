@@ -24,16 +24,16 @@ if (process.env.discordToken) {
 }
 
 if (process.env.slackToken) {
-  slack.on('member_joined_channel', async (event) => {
-    const msg = []
-    message.joined.forEach(element => {
-      msg.push(element.replace('${event.user}', `${event.user}`))
+  slack.on('member_joined_channel', async event => {
+    const info = []
+    message.joined.forEach(e => {
+      info.push(e.replace('${event.user}', `${event.user}`))
     })
   
     try {
-      const random = Math.floor(Math.random() * msg.length)
-      await slack.sendMessage('Slack', event.channel, msg[random])
-      console.log('Slack', event.channel, '\nOut', msg[random])
+      const random = Math.floor(Math.random() * info.length)
+      slack.sendMessage('Slack', event.channel, info[random])
+      console.log('Slack', event.channel, '\n' + info[random])
     } catch (error) {
       console.warn(error)
     }

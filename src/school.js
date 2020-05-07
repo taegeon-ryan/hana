@@ -1,4 +1,5 @@
 const School = require('school-kr')
+const school = new School()
 const fs = require('fs')
 
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
@@ -128,7 +129,7 @@ const index = async (text, channel) => {
       if (text.match(/.*(초|중|고|학교|유치원)/)) {
         for (let key in School.Region) {
           splitText = text.match(/.*(초|중|고|학교|유치원)/)[0].split(' ')
-          const search = await new School().search(School.Region[key], splitText[splitText.length - 1])
+          const search = await school.search(School.Region[key], splitText[splitText.length - 1])
           search.forEach(e => {
             let addr
             for (const name in define.region) {
@@ -175,7 +176,6 @@ const index = async (text, channel) => {
       if (!data[channel]) {
         info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
-        let school = new School()
         school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
         info += await meal(school, date, match[0])
@@ -187,7 +187,6 @@ const index = async (text, channel) => {
       if (!data[channel]) {
         info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
-        let school = new School()
         school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
         const calendar = await school.getCalendar({ default: null })
         info = `[${calendar.year}년 ${calendar.month}월]\n`
