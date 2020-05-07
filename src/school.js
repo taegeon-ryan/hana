@@ -20,33 +20,13 @@ const save = (info) => {
 const dateConvert = (text) => {
   const date = new Date()
 
-  const setDate = (val) => {
+  const setDate = (val, type) => {
     if (text.includes('전')) {
-      date.setDate(date.getDate() - val)
-    } else if (text.includes('후') || text.includes('뒤')) {
-      date.setDate(date.getDate() + val)
+      type == 'M' ? date.setMonth(date.getMonth() - val) : type == 'Y' ? date.setFullYear(date.getFullYear() - val) : date.setDate(date.getDate() - val)
+    } else if (text.match(/(후|뒤)/)) {
+      type == 'M' ? date.setMonth(date.getMonth() + val) : type == 'Y' ? date.setFullYear(date.getFullYear() + val) : date.setDate(date.getDate() + val)
     } else {
-      date.setDate(val)
-    }
-  }
-
-  const setMonth = (val) => {
-    if (text.includes('전')) {
-      date.setMonth(date.getMonth() - val)
-    } else if (text.includes('후') || text.includes('뒤')) {
-      date.setMonth(date.getMonth() + val)
-    } else {
-      date.setMonth(val - 1)
-    }
-  }
-
-  const setYear = (val) => {
-    if (text.includes('전')) {
-      date.setFullYear(date.getFullYear() - val)
-    } else if (text.includes('후') || text.includes('뒤')) {
-      date.setFullYear(date.getFullYear() + val)
-    } else {
-      date.setFullYear(val)
+      type == 'M' ? date.setMonth(val - 1) : type == 'Y' ? date.setFullYear(val) : date.setDate(val)
     }
   }
 
@@ -54,15 +34,15 @@ const dateConvert = (text) => {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   }
 
-  if (text.includes('월') || text.includes('달')) {
-    setMonth(Number(text.replace(/[^{0-9}]/gi, '')))
+  if (text.match(/(월|달)/)) {
+    setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'M')
   }
 
   if (text.includes('해')) {
     if ((text.match(/다/g) || []).length) {
-      date.setFullYear(date.getFullYear() + text.match(/다/g).length)
+      date.setDate(date.getFullYear() + text.match(/다/g).length, 'Y')
     } else if ((text.match(/지/g) || []).length) {
-      date.setFullYear(date.getFullYear() - text.match(/지/g).length)
+      date.setDate(date.getFullYear() - text.match(/지/g).length, 'Y')
     }
   }
 
@@ -78,7 +58,7 @@ const dateConvert = (text) => {
     dateExp = ['재재작년', '재작년', '작년', '올해', '내년', '후년', '(내후년|후후년)']
     for (let i in dateExp) {
       if (text.match(RegExp(dateExp[i]))) {
-        date.setFullYear(date.getFullYear() - 3 + Number(i))
+        date.setDate(date.getFullYear() - 3 + Number(i), 'Y')
       }
     }
   } else if (text.includes('열흘')) {

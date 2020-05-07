@@ -12,7 +12,7 @@ if (process.env.discordToken) {
     try {
       const info = await school(msg.content, msg.channel.id)
       if (info) {
-        await msg.reply(info)
+        await msg.channel.sendMessage(info)
         console.log('Discord', msg.channel.id, '\n' + msg.content, '\n' + info)
       }
     } catch (error) {
