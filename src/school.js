@@ -90,7 +90,7 @@ const dateConvert = (text) => {
 
 const meal = async (school, date, type) => {
   let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다\n` })
-  meal = meal[date.getDate()].replace(/[0-9*.]/gi, '')
+  meal = meal[date.getDate()].replace(/[0-9*.]|amp;/gi, '')
 
   if (meal.includes(`[${type}]`)) {
     const length = meal.indexOf(`[${type}]`)
