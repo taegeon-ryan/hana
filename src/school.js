@@ -54,7 +54,7 @@ const dateConvert = (text) => {
   }
   
   if (text.includes('년')) {
-    setYear(Number(text.replace(/[^{0-9}]/gi, '')))
+    setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'Y')
     dateExp = ['재재작년', '재작년', '작년', '올해', '내년', '후년', '(내후년|후후년)']
     for (let i in dateExp) {
       if (text.match(RegExp(dateExp[i]))) {
@@ -88,7 +88,7 @@ const dateConvert = (text) => {
   return date
 }
 
-const meal = async (school, date, type) => {
+const meal = async (date, type) => {
   let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다\n` })
   meal = meal[date.getDate()].replace(/[0-9*.]|amp;/gi, '')
 
@@ -109,7 +109,7 @@ const index = async (text, channel) => {
       if (text.match(/.*(초|중|고|학교|유치원)/)) {
         for (let key in School.Region) {
           splitText = text.match(/.*(초|중|고|학교|유치원)/)[0].split(' ')
-          const search = await school.search(School.Region[key], splitText[splitText.length - 1])
+          const search = await new School().search(School.Region[key], splitText[splitText.length - 1])
           search.forEach(e => {
             let addr
             for (const name in define.region) {
@@ -158,7 +158,7 @@ const index = async (text, channel) => {
       } else {
         school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
-        info += await meal(school, date, match[0])
+        info += await meal(date, match[0])
       }
     }
 
