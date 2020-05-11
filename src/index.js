@@ -1,7 +1,9 @@
 const { RTMClient } = require('@slack/rtm-api')
-const Discord = require('discord.js');
-const school = require('./school')
+const Discord = require('discord.js')
+const colors = require('colors')
 const fs = require('fs')
+
+const school = require('./school')
 const message = JSON.parse(fs.readFileSync('src/message.json').toString())
 
 const slack = new RTMClient(process.env.slackToken)
@@ -13,7 +15,7 @@ if (process.env.discordToken) {
       const info = await school(msg.content, msg.channel.id)
       if (info) {
         await msg.channel.sendMessage(info)
-        console.log('Discord', msg.channel.id, '\n' + msg.content, '\n' + info)
+        console.log(`Discord ${msg.channel.id}\n${msg.content}\n`.green, info)
       }
     } catch (error) {
       console.warn(error)
@@ -33,7 +35,7 @@ if (process.env.slackToken) {
     try {
       const random = Math.floor(Math.random() * info.length)
       slack.sendMessage('Slack', event.channel, info[random])
-      console.log('Slack', event.channel, '\n' + info[random])
+      console.log(`Slack ${event.channel}\n`.green, info[random])
     } catch (error) {
       console.warn(error)
     }
@@ -45,7 +47,7 @@ if (process.env.slackToken) {
   
       if (info) {
         await slack.sendMessage(info, event.channel)
-        console.log('Slack', event.channel, '\n' + event.text, '\n' + info)
+        console.log(`Slack ${event.channel}\n${event.text}\n`.green, info)
       }
     } catch (error) {
       console.warn(error)
