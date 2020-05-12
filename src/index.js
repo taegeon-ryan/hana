@@ -14,7 +14,11 @@ if (process.env.discordToken) {
     try {
       const info = await school(msg.content, msg.channel.id)
       if (info) {
-        await msg.channel.sendMessage(info)
+        const embed = new Discord.RichEmbed()
+          .setColor('#f7cac9')
+          .setTitle('하나')
+          .setDescription(info)
+        await msg.channel.send({embed})
         console.log(`Discord ${msg.channel.id}\n${msg.content}\n`.green, info)
       }
     } catch (error) {
