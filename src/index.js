@@ -22,7 +22,7 @@ if (process.env.discordToken) {
         console.log(`Discord ${msg.channel.id}\n${msg.content}\n`.green, info)
       }
     } catch (error) {
-      console.warn(error)
+      console.warn(`Discord ${msg.channel.id}\n${msg.content}\n`.red, error)
     }
   });
 
@@ -41,7 +41,7 @@ if (process.env.slackToken) {
       slack.sendMessage('Slack', event.channel, info[random])
       console.log(`Slack ${event.channel}\n`.green, info[random])
     } catch (error) {
-      console.warn(error)
+      console.warn(`Slack ${event.channel}\n`.red, error)
     }
   })
   
@@ -54,7 +54,7 @@ if (process.env.slackToken) {
         console.log(`Slack ${event.channel}\n${event.text}\n`.green, info)
       }
     } catch (error) {
-      console.warn(error)
+      console.warn(`Slack ${event.channel}\n${event.text}\n`.red, error)
     }
   });
   
