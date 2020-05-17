@@ -12,7 +12,7 @@ const discord = new Discord.Client()
 if (process.env.discordToken) {
   discord.on('message', async msg => {
     try {
-      const info = await school(msg.content, msg.channel.id)
+      const info = await school(msg.content, msg.channel.id, 'discord')
       if (info) {
         const embed = new Discord.RichEmbed()
           .setColor('#f7cac9')
@@ -47,7 +47,7 @@ if (process.env.slackToken) {
   
   slack.on('message', async event => {
     try {
-      const info = await school(event.text, event.channel)
+      const info = await school(event.text, event.channel, 'slack')
   
       if (info) {
         await slack.sendMessage(info, event.channel)

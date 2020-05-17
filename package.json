@@ -17,7 +17,7 @@
     "colors": "^1.4.0",
     "discord.js": "^11.6.1",
     "dotenv": "^8.2.0",
-    "school-kr": "^3.1.0"
+    "school-kr": "^3.1.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

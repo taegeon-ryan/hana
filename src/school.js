@@ -5,16 +5,16 @@ const fs = require('fs')
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
 const search = {}
 
-const load = () => {
+const load = (type) => {
   try {
-    return JSON.parse(fs.readFileSync('src/data/slack.json').toString())
+    return JSON.parse(fs.readFileSync(`src/data/${type}.json`).toString())
   } catch {
     return {}
   }
 }
 
-const save = (info) => {
-  fs.writeFileSync('src/data/slack.json', JSON.stringify(info))
+const save = (type, info) => {
+  fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
 }
 
 const dateConvert = (text) => {
@@ -100,7 +100,7 @@ const meal = async (date, type) => {
   return meal
 }
 
-const index = async (text, channel) => {
+const index = async (text, channel, type) => {
   let info
   if (text.includes('하나')) {
     if (text.match(/검색/)) {
@@ -138,7 +138,7 @@ const index = async (text, channel) => {
     }
 
     if (text.match(/등록/)) {
-      const data = load()
+      const data = load(type)
       if (!search[channel]) {
         info = `채널에서 검색된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
@@ -146,13 +146,13 @@ const index = async (text, channel) => {
         info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
         data[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
       }
-      save(data)
+      save(type, data)
     }
 
     const date = dateConvert(text)
     const match = text.match(/(조식|중식|석식|급식)/)
     if (match) {
-      const data = load()
+      const data = load(type)
       if (!data[channel]) {
         info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
@@ -163,7 +163,7 @@ const index = async (text, channel) => {
     }
 
     if (text.includes('일정')) {
-      const data = load()
+      const data = load(type)
       if (!data[channel]) {
         info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
