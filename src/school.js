@@ -109,7 +109,7 @@ const index = async (text, channel, type) => {
       if (text.match(/.*(초|중|고|학교|유치원)/)) {
         for (let key in School.Region) {
           splitText = text.match(/.*(초|중|고|학교|유치원)/)[0].split(' ')
-          const search = await new School().search(School.Region[key], splitText[splitText.length - 1])
+          const search = await school.search(School.Region[key], splitText[splitText.length - 1])
           search.forEach(e => {
             let addr
             for (const name in define.region) {
@@ -149,14 +149,14 @@ const index = async (text, channel, type) => {
       save(type, data)
     }
 
-    const date = dateConvert(text)
     const match = text.match(/(조식|중식|석식|급식)/)
     if (match) {
-      const data = load(type)
-      if (!data[channel]) {
+      const data = load(type)[channel]
+      const date = dateConvert(text)
+      if (!data) {
         info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
-        school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
+        school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
         info += await meal(date, match[0])
       }
