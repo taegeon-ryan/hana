@@ -14,7 +14,11 @@ const load = (type) => {
 }
 
 const save = (type, info) => {
-  fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
+  try {
+    fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
+  } catch {
+    fs.mkdirSync('src/data');
+  }
 }
 
 const dateConvert = (text) => {
@@ -47,7 +51,7 @@ const dateConvert = (text) => {
   }
 
   for (let i in define.dateExp) {
-    if (text.match(RegExp(dateExp[i]))) {
+    if (text.match(RegExp(define.dateExp[i]))) {
       date.setDate(date.getDate() - 3 + Number(i))
     }
   }

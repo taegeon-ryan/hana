@@ -38,7 +38,7 @@ if (process.env.slackToken) {
   
     try {
       const random = Math.floor(Math.random() * info.length)
-      slack.sendMessage('Slack', event.channel, info[random])
+      slack.sendMessage(info[random], event.channel)
       console.log(`Slack ${event.channel}\n`.green, info[random])
     } catch (error) {
       console.warn(`Slack ${event.channel}\n`.red, error)
