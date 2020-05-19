@@ -22,11 +22,11 @@ const dateConvert = (text) => {
 
   const setDate = (val, type) => {
     if (text.includes('전')) {
-      type == 'M' ? date.setMonth(date.getMonth() - val) : type == 'Y' ? date.setFullYear(date.getFullYear() - val) : date.setDate(date.getDate() - val)
+      type == 'Y' ? date.setFullYear(date.getFullYear() - val) : type == 'M' ? date.setMonth(date.getMonth() - val) : date.setDate(date.getDate() - val)
     } else if (text.match(/(후|뒤)/)) {
-      type == 'M' ? date.setMonth(date.getMonth() + val) : type == 'Y' ? date.setFullYear(date.getFullYear() + val) : date.setDate(date.getDate() + val)
+      type == 'Y' ? date.setFullYear(date.getFullYear() + val) : type == 'M' ? date.setMonth(date.getMonth() + val) : date.setDate(date.getDate() + val)
     } else {
-      type == 'M' ? date.setMonth(val - 1) : type == 'Y' ? date.setFullYear(val) : date.setDate(val)
+      type == 'Y' ? date.setFullYear(val) : type == 'M' ? date.setMonth(val - 1) : date.setDate(val)
     }
   }
 
@@ -46,8 +46,7 @@ const dateConvert = (text) => {
     }
   }
 
-  let dateExp = ['(그끄저께|그끄제)', '(그저께|그제)', '어제', '오늘', '내일', '모레', '글피', '그글피']
-  for (let i in dateExp) {
+  for (let i in define.dateExp) {
     if (text.match(RegExp(dateExp[i]))) {
       date.setDate(date.getDate() - 3 + Number(i))
     }
@@ -55,9 +54,8 @@ const dateConvert = (text) => {
   
   if (text.includes('년')) {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'Y')
-    dateExp = ['재재작년', '재작년', '작년', '올해', '내년', '후년', '(내후년|후후년)']
-    for (let i in dateExp) {
-      if (text.match(RegExp(dateExp[i]))) {
+    for (let i in define.dateYearExp) {
+      if (text.match(RegExp(define.dateYearExp[i]))) {
         date.setDate(date.getFullYear() - 3 + Number(i), 'Y')
       }
     }
@@ -139,10 +137,11 @@ const index = async (text, channel, type) => {
 
     if (text.match(/등록/)) {
       const data = load(type)
-      if (!search[channel]) {
+      const searchData = search[channel]
+      if (!searchData) {
         info = `채널에서 검색된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
-        let i = search[channel][Number(text.replace(/[^{0-9}]/gi, '')) - 1]
+        let i = searchData[Number(text.replace(/[^{0-9}]/gi, '')) - 1]
         info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
         data[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
       }
@@ -163,11 +162,11 @@ const index = async (text, channel, type) => {
     }
 
     if (text.includes('일정')) {
-      const data = load(type)
-      if (!data[channel]) {
+      const data = load(type)[channel]
+      if (data) {
         info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
-        school.init(School.Type[data[channel].type], School.Region[data[channel].region], data[channel].schoolCode)
+        school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         const calendar = await school.getCalendar({ default: null })
         info = `[${calendar.year}년 ${calendar.month}월]\n`
 
