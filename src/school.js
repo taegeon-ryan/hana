@@ -18,6 +18,7 @@ const save = (type, info) => {
     fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
   } catch {
     fs.mkdirSync('src/data');
+    fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
   }
 }
 
