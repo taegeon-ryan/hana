@@ -134,7 +134,7 @@ const index = async (text, channel, type) => {
           info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
           search[channel] = result
         }
-        info += `\n'1번 등록해줘'처럼 말해주면 채널에 등록해줄게`
+        info += `\n'하나야 1번 등록해줘'처럼 말해주면 채널에 등록해줄게`
       } else {
         info = '학교나 유치원 이름을 정확하게 입력해줘!'
       }
@@ -144,7 +144,7 @@ const index = async (text, channel, type) => {
       const data = load(type)
       const searchData = search[channel]
       if (!searchData) {
-        info = `채널에서 검색된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
+        info = `채널에서 검색된 학교나 유치원이 없어!\n'하나야 하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
         let i = searchData[Number(text.replace(/[^{0-9}]/gi, '')) - 1]
         info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
@@ -158,7 +158,7 @@ const index = async (text, channel, type) => {
       const data = load(type)[channel]
       const date = dateConvert(text)
       if (!data) {
-        info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
+        info = `채널에 등록된 학교나 유치원이 없어!\n'하나야 하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
@@ -169,7 +169,7 @@ const index = async (text, channel, type) => {
     if (text.includes('일정')) {
       const data = load(type)[channel]
       if (data) {
-        info = `채널에 등록된 학교나 유치원이 없어!\n'하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
+        info = `채널에 등록된 학교나 유치원이 없어!\n'하나야 하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         const calendar = await school.getCalendar({ default: null })

@@ -10,9 +10,16 @@ const slack = new RTMClient(process.env.slackToken)
 const discord = new Discord.Client()
 
 if (process.env.discordToken) {
+  discord.on('ready', () => {
+    console.log(`Logged in as ${discord.user.tag}!`)
+    setInterval(() => {
+      discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)])
+    }, 10000)
+  })
+
   discord.on('message', async msg => {
     try {
-      const info = await school(msg.content, msg.channel.id, 'discord')
+      const info = await school(msg.content, msg.channel.id, 'discord', { type: '' })
       if (info) {
         const embed = new Discord.RichEmbed()
           .setColor('#f7cac9')
@@ -24,7 +31,7 @@ if (process.env.discordToken) {
     } catch (error) {
       console.warn(`Discord ${msg.channel.id}\n${msg.content}\n`.red, error)
     }
-  });
+  })
 
   discord.login(process.env.discordToken)
 }
@@ -56,7 +63,7 @@ if (process.env.slackToken) {
     } catch (error) {
       console.warn(`Slack ${event.channel}\n${event.text}\n`.red, error)
     }
-  });
+  })
   
   (async () => {
     await slack.start()
