@@ -1,5 +1,5 @@
 {
-  "name": "Hana",
+  "name": "hana",
   "version": "1.0.0",
   "scripts": {
     "serve": "node -r dotenv/config src/index",

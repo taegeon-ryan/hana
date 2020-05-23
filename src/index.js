@@ -6,12 +6,11 @@ const fs = require('fs')
 const school = require('./school')
 const message = JSON.parse(fs.readFileSync('src/message.json').toString())
 
-const slack = new RTMClient(process.env.slackToken)
-const discord = new Discord.Client()
-
 if (process.env.discordToken) {
+  const discord = new Discord.Client()
+
   discord.on('ready', () => {
-    console.log(`Logged in as ${discord.user.tag}!`)
+    console.log(`Logged in as ${discord.user.tag}!`.green)
     setInterval(() => {
       discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)])
     }, 10000)
@@ -25,7 +24,7 @@ if (process.env.discordToken) {
           .setColor('#f7cac9')
           .setTitle('하나')
           .setDescription(info)
-        await msg.channel.send({embed})
+        await msg.channel.send({ embed })
         console.log(`Discord ${msg.channel.id}\n${msg.content}\n`.green, info)
       }
     } catch (error) {
@@ -37,12 +36,14 @@ if (process.env.discordToken) {
 }
 
 if (process.env.slackToken) {
+  const slack = new RTMClient(process.env.slackToken)
+
   slack.on('member_joined_channel', async event => {
     const info = []
     message.joined.forEach(e => {
-      info.push(e.replace('${event.user}', `${event.user}`))
+      info.push(e.replace('${event.user}', event.user))
     })
-  
+
     try {
       const random = Math.floor(Math.random() * info.length)
       slack.sendMessage(info[random], event.channel)
@@ -51,11 +52,11 @@ if (process.env.slackToken) {
       console.warn(`Slack ${event.channel}\n`.red, error)
     }
   })
-  
+
   slack.on('message', async event => {
     try {
       const info = await school(event.text, event.channel, 'slack')
-  
+
       if (info) {
         await slack.sendMessage(info, event.channel)
         console.log(`Slack ${event.channel}\n${event.text}\n`.green, info)
@@ -63,9 +64,10 @@ if (process.env.slackToken) {
     } catch (error) {
       console.warn(`Slack ${event.channel}\n${event.text}\n`.red, error)
     }
-  })
-  
+  });
+
   (async () => {
     await slack.start()
+    console.log('Slackbot is running!'.green)
   })()
 }

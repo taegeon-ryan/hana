@@ -17,7 +17,7 @@ const save = (type, info) => {
   try {
     fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
   } catch {
-    fs.mkdirSync('src/data');
+    fs.mkdirSync('src/data')
     fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
   }
 }
@@ -27,11 +27,11 @@ const dateConvert = (text) => {
 
   const setDate = (val, type) => {
     if (text.includes('전')) {
-      type == 'Y' ? date.setFullYear(date.getFullYear() - val) : type == 'M' ? date.setMonth(date.getMonth() - val) : date.setDate(date.getDate() - val)
+      type === 'Y' ? date.setFullYear(date.getFullYear() - val) : type === 'M' ? date.setMonth(date.getMonth() - val) : date.setDate(date.getDate() - val)
     } else if (text.match(/(후|뒤)/)) {
-      type == 'Y' ? date.setFullYear(date.getFullYear() + val) : type == 'M' ? date.setMonth(date.getMonth() + val) : date.setDate(date.getDate() + val)
+      type === 'Y' ? date.setFullYear(date.getFullYear() + val) : type === 'M' ? date.setMonth(date.getMonth() + val) : date.setDate(date.getDate() + val)
     } else {
-      type == 'Y' ? date.setFullYear(val) : type == 'M' ? date.setMonth(val - 1) : date.setDate(val)
+      type === 'Y' ? date.setFullYear(val) : type === 'M' ? date.setMonth(val - 1) : date.setDate(val)
     }
   }
 
@@ -51,15 +51,15 @@ const dateConvert = (text) => {
     }
   }
 
-  for (let i in define.dateExp) {
+  for (const i in define.dateExp) {
     if (text.match(RegExp(define.dateExp[i]))) {
       date.setDate(date.getDate() - 3 + Number(i))
     }
   }
-  
+
   if (text.includes('년')) {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'Y')
-    for (let i in define.dateYearExp) {
+    for (const i in define.dateYearExp) {
       if (text.match(RegExp(define.dateYearExp[i]))) {
         date.setDate(date.getFullYear() - 3 + Number(i), 'Y')
       }
@@ -110,8 +110,8 @@ const index = async (text, channel, type) => {
       info = ''
       const result = []
       if (text.match(/.*(초|중|고|학교|유치원)/)) {
-        for (let key in School.Region) {
-          splitText = text.match(/.*(초|중|고|학교|유치원)/)[0].split(' ')
+        for (const key in School.Region) {
+          const splitText = text.match(/.*(초|중|고|학교|유치원)/)[0].split(' ')
           const search = await school.search(School.Region[key], splitText[splitText.length - 1])
           search.forEach(e => {
             let addr
@@ -121,8 +121,8 @@ const index = async (text, channel, type) => {
               }
             }
             let type = 'HIGH'
-            let schoolExp = { '중학교': 'MIDDLE', '초등학교': 'ELEMENTARY', '유치원': 'KINDERGARTEN' }
-            for (let name in schoolExp) {
+            const schoolExp = { 중학교: 'MIDDLE', 초등학교: 'ELEMENTARY', 유치원: 'KINDERGARTEN' }
+            for (const name in schoolExp) {
               if (e.name.match(name)) {
                 type = schoolExp[name]
               }
@@ -134,7 +134,7 @@ const index = async (text, channel, type) => {
           info += `\n${Number(key) + 1}. ${result[key].name} (${result[key].address !== ' ' ? result[key].address : result[key].schoolRegion ? result[key].schoolRegion + '교육청 소재' : '소재지 정보 없음'})`
           search[channel] = result
         }
-        info += `\n'하나야 1번 등록해줘'처럼 말해주면 채널에 등록해줄게`
+        info += '\n\'하나야 1번 등록해줘\'처럼 말해주면 채널에 등록해줄게'
       } else {
         info = '학교나 유치원 이름을 정확하게 입력해줘!'
       }
@@ -144,10 +144,10 @@ const index = async (text, channel, type) => {
       const data = load(type)
       const searchData = search[channel]
       if (!searchData) {
-        info = `채널에서 검색된 학교나 유치원이 없어!\n'하나야 하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
+        info = '채널에서 검색된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
       } else {
-        let i = searchData[Number(text.replace(/[^{0-9}]/gi, '')) - 1]
-        info = `${i.name}${i.type == 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
+        const i = searchData[Number(text.replace(/[^{0-9}]/gi, '')) - 1]
+        info = `${i.name}${i.type === 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
         data[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
       }
       save(type, data)
@@ -158,7 +158,7 @@ const index = async (text, channel, type) => {
       const data = load(type)[channel]
       const date = dateConvert(text)
       if (!data) {
-        info = `채널에 등록된 학교나 유치원이 없어!\n'하나야 하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
+        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
@@ -169,7 +169,7 @@ const index = async (text, channel, type) => {
     if (text.includes('일정')) {
       const data = load(type)[channel]
       if (data) {
-        info = `채널에 등록된 학교나 유치원이 없어!\n'하나야 하나고등학교 검색해줘'처럼 말해주면 내가 찾아줄게`
+        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         const calendar = await school.getCalendar({ default: null })
