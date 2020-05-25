@@ -168,7 +168,7 @@ const index = async (text, channel, type) => {
 
     if (text.includes('일정')) {
       const data = load(type)[channel]
-      if (data) {
+      if (!data) {
         info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
