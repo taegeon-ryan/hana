@@ -153,6 +153,11 @@ const index = async (text, channel, type) => {
       save(type, data)
     }
 
+    if (text.match(/(!|도움|도와)/)) {
+      info = '내가 필요하면 \'하나!\'라고 불러줘\n\'하나야 급식\'처럼 부탁하거나 \'하나야 일정\'처럼 물어봐줘\n다른 학교나 유치원을 등록하려면 \'하나야 하나고 검색\'처럼 다시 부탁해줘!\n자세한건 https://github.com/momenthana/hana 여기서 참고하고'
+      type === 'discord' ? info += '\n다른건 <@457459470424080384> 또는 momenthana@kakao.com으로 질문해줘!' : '\n다른건 momenthana@kakao.com으로 질문해줘!'
+    }
+
     const match = text.match(/(조식|중식|석식|급식)/)
     if (match) {
       const data = load(type)[channel]
