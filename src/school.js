@@ -144,7 +144,7 @@ const index = async (text, channel, type) => {
       const data = load(type)
       const searchData = search[channel]
       if (!searchData) {
-        info = '채널에서 검색된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
+        info = '채널에서 검색된 학교나 유치원이 없어!\n\'하나야 하나고 검색해줘\'처럼 물어보면 찾아줄게'
       } else {
         const i = searchData[Number(text.replace(/[^{0-9}]/gi, '')) - 1]
         info = `${i.name}${i.type === 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
@@ -163,7 +163,7 @@ const index = async (text, channel, type) => {
       const data = load(type)[channel]
       const date = dateConvert(text)
       if (!data) {
-        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
+        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나중 검색해줘\'처럼 물어보면 찾아줄게'
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
@@ -174,7 +174,7 @@ const index = async (text, channel, type) => {
     if (text.includes('일정')) {
       const data = load(type)[channel]
       if (!data) {
-        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나고등학교 검색해줘\'처럼 말해주면 내가 찾아줄게'
+        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나초 검색해줘\'처럼 물어보면 찾아줄게'
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         const calendar = await school.getCalendar({ default: null })
