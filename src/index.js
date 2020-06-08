@@ -12,7 +12,10 @@ if (process.env.discordToken) {
   discord.on('ready', () => {
     console.log(`Logged in as ${discord.user.tag}!`.green)
     setInterval(() => {
-      discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)])
+      discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)], {
+        type: process.env.twitch ? "STREAMING" : null,
+        url: "https://www.twitch.tv/" + process.env.twitch
+      })
     }, 10000)
   })
 
