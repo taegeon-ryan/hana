@@ -8,13 +8,17 @@ const message = JSON.parse(fs.readFileSync('src/message.json').toString())
 
 if (process.env.discordToken) {
   const discord = new Discord.Client()
+  const length = message.activity.length
 
   discord.on('ready', () => {
     console.log(`Logged in as ${discord.user.tag}!`.green)
     setInterval(() => {
+      let memberCounts = 0
+      discord.guilds.forEach(element => memberCounts += element.memberCount)
+      message.activity[length] = memberCounts + '명이 사용'
       discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)], {
-        type: process.env.twitch ? "STREAMING" : null,
-        url: "https://www.twitch.tv/" + process.env.twitch
+        type: process.env.twitch ? 'STREAMING' : null,
+        url: 'https://www.twitch.tv/' + process.env.twitch
       })
     }, 10000)
   })
