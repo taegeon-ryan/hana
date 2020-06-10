@@ -13,9 +13,12 @@ if (process.env.discordToken) {
   discord.on('ready', () => {
     console.log(`Logged in as ${discord.user.tag}!`.green)
     setInterval(() => {
-      let memberCounts = 0
-      discord.guilds.forEach(element => memberCounts += element.memberCount)
-      message.activity[length] = memberCounts + '명이 사용'
+      let members = 0
+      discord.guilds.forEach(element => {
+        members += element.memberCount
+      })
+      message.activity[length] = members + '명이 사용'
+      message.activity[length + 1] = '서버 ' + discord.guilds.size + '개에서 사용'
       discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)], {
         type: process.env.twitch ? 'STREAMING' : null,
         url: 'https://www.twitch.tv/' + process.env.twitch
