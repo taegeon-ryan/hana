@@ -4,11 +4,11 @@ const colors = require('colors')
 const fs = require('fs')
 
 const school = require('./school')
-const message = JSON.parse(fs.readFileSync('src/message.json').toString())
+const messages = JSON.parse(fs.readFileSync('src/messages.json').toString())
 
 if (process.env.discordToken) {
   const discord = new Discord.Client()
-  const length = message.activity.length
+  const length = messages.activity.length
 
   discord.on('ready', () => {
     console.log(`Logged in as ${discord.user.tag}!`.green)
@@ -17,9 +17,9 @@ if (process.env.discordToken) {
       discord.guilds.forEach(element => {
         members += element.memberCount
       })
-      message.activity[length] = members + '명이 사용'
-      message.activity[length + 1] = '서버 ' + discord.guilds.size + '개에서 사용'
-      discord.user.setActivity(message.activity[Math.floor(Math.random() * message.activity.length)], {
+      messages.activity[length] = members + '명이 사용'
+      messages.activity[length + 1] = '서버 ' + discord.guilds.size + '개에서 사용'
+      discord.user.setActivity(messages.activity[Math.floor(Math.random() * messages.activity.length)], {
         type: process.env.twitch ? 'STREAMING' : null,
         url: 'https://www.twitch.tv/' + process.env.twitch
       })
@@ -50,7 +50,7 @@ if (process.env.slackToken) {
 
   slack.on('member_joined_channel', async event => {
     const info = []
-    message.joined.forEach(e => {
+    messages.joined.forEach(e => {
       info.push(e.replace('${event.user}', event.user))
     })
 

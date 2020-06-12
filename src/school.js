@@ -2,7 +2,9 @@ const School = require('school-kr')
 const school = new School()
 const fs = require('fs')
 
+const dateConvert = require('./dateConvert.js')
 const define = JSON.parse(fs.readFileSync('src/define.json').toString())
+const messages = JSON.parse(fs.readFileSync('src/messages.json').toString())
 const search = {}
 
 const load = (type) => {
@@ -20,75 +22,6 @@ const save = (type, info) => {
     fs.mkdirSync('src/data')
     fs.writeFileSync(`src/data/${type}.json`, JSON.stringify(info))
   }
-}
-
-const dateConvert = (text) => {
-  const date = new Date()
-
-  const setDate = (val, type) => {
-    if (text.includes('전')) {
-      type === 'Y' ? date.setFullYear(date.getFullYear() - val) : type === 'M' ? date.setMonth(date.getMonth() - val) : date.setDate(date.getDate() - val)
-    } else if (text.match(/(후|뒤)/)) {
-      type === 'Y' ? date.setFullYear(date.getFullYear() + val) : type === 'M' ? date.setMonth(date.getMonth() + val) : date.setDate(date.getDate() + val)
-    } else {
-      type === 'Y' ? date.setFullYear(val) : type === 'M' ? date.setMonth(val - 1) : date.setDate(val)
-    }
-  }
-
-  if (text.includes('일') && text.replace(/[^{0-9}]/gi, '')) {
-    setDate(Number(text.replace(/[^{0-9}]/gi, '')))
-  }
-
-  if (text.match(/(월|달)/)) {
-    setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'M')
-  }
-
-  if (text.includes('해')) {
-    if ((text.match(/다/g) || []).length) {
-      date.setDate(date.getFullYear() + text.match(/다/g).length, 'Y')
-    } else if ((text.match(/지/g) || []).length) {
-      date.setDate(date.getFullYear() - text.match(/지/g).length, 'Y')
-    }
-  }
-
-  for (const i in define.dateExp) {
-    if (text.match(RegExp(define.dateExp[i]))) {
-      date.setDate(date.getDate() - 3 + Number(i))
-    }
-  }
-
-  if (text.includes('년')) {
-    setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'Y')
-    for (const i in define.dateYearExp) {
-      if (text.match(RegExp(define.dateYearExp[i]))) {
-        date.setDate(date.getFullYear() - 3 + Number(i), 'Y')
-      }
-    }
-  } else if (text.includes('열흘')) {
-    setDate(10)
-  } else if (text.includes('스무날')) {
-    setDate(20)
-  } else if (text.includes('보름')) {
-    setDate(15)
-  } else if (text.includes('그믐')) {
-    setDate(30)
-  } else {
-    for (const key in define.dateCentury) {
-      if (text.includes(define.dateCentury[key]) || text.includes(define.dateCenturyAbbr[key])) {
-        if (text.includes('열')) {
-          setDate(Number(key) + 11)
-        } else if (text.includes('스무')) {
-          setDate(Number(key) + 21)
-        } else {
-          setDate(Number(key) + 1)
-        }
-
-        return date
-      }
-    }
-  }
-
-  return date
 }
 
 const meal = async (date, type) => {
@@ -141,30 +74,30 @@ const index = async (text, channel, type) => {
     }
 
     if (text.match(/등록/)) {
-      const data = load(type)
       const searchData = search[channel]
       if (!searchData) {
-        info = '채널에서 검색된 학교나 유치원이 없어!\n\'하나야 하나고 검색해줘\'처럼 물어보면 찾아줄게'
+        info = messages.unregistered
       } else {
+        const data = load(type)
         const i = searchData[Number(text.replace(/[^{0-9}]/gi, '')) - 1]
         info = `${i.name}${i.type === 'KINDERGARTEN' ? '을' : '를'} 채널에 등록했어!`
         data[channel] = { type: i.type, region: i.region, schoolCode: i.schoolCode }
+        save(type, data)
       }
-      save(type, data)
     }
 
     if (text.match(/(하나!|도움|도와)/)) {
-      info = '내가 필요하면 \'하나!\'라고 불러줘\n\'하나야 급식\'처럼 부탁하거나 \'하나야 일정\'처럼 물어봐줘\n혹시 다른 학교나 유치원을 등록하려면 \'하나야 하나고 검색\'처럼 다시 부탁해줘!\n자세한건 https://github.com/momenthana/hana 여기서 참고하고'
+      info = messages.help
       type === 'discord' ? info += '\n다른건 <@457459470424080384> 또는 momenthana@kakao.com으로 질문해줘!' : '\n다른건 momenthana@kakao.com으로 질문해줘!'
     }
 
     const match = text.match(/(조식|중식|석식|급식)/)
     if (match) {
       const data = load(type)[channel]
-      const date = dateConvert(text)
       if (!data) {
-        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나중 검색해줘\'처럼 물어보면 찾아줄게'
+        info = messages.unregistered
       } else {
+        const date = dateConvert(text)
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
         info += await meal(date, match[0])
@@ -174,7 +107,7 @@ const index = async (text, channel, type) => {
     if (text.includes('일정')) {
       const data = load(type)[channel]
       if (!data) {
-        info = '채널에 등록된 학교나 유치원이 없어!\n\'하나야 하나초 검색해줘\'처럼 물어보면 찾아줄게'
+        info = messages.unregistered
       } else {
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
         const calendar = await school.getCalendar({ default: null })
