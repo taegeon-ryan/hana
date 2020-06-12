@@ -113,10 +113,10 @@ const index = async (text, channel, type) => {
         const calendar = await school.getCalendar({ default: null })
         info = `[${calendar.year}년 ${calendar.month}월]\n`
 
-        delete calendar.year
-        delete calendar.month
-        delete calendar.day
-        delete calendar.today
+        calendar.year = undefined
+        calendar.month = undefined
+        calendar.day = undefined
+        calendar.today = undefined
 
         for (const day in calendar) {
           if (calendar[day]) {
