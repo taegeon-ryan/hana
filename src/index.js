@@ -13,12 +13,7 @@ if (process.env.discordToken) {
   discord.on('ready', () => {
     console.log(`Logged in as ${discord.user.tag}!`.green)
     setInterval(() => {
-      let members = 0
-      discord.guilds.forEach(element => {
-        members += element.memberCount
-      })
-      messages.activity[length] = members + '명이 사용'
-      messages.activity[length + 1] = '서버 ' + discord.guilds.size + '개에서 사용'
+      messages.activity[length] = '서버 ' + discord.guilds.size + '개에서 사용'
       discord.user.setActivity(messages.activity[Math.floor(Math.random() * messages.activity.length)], {
         type: process.env.twitch ? 'STREAMING' : null,
         url: 'https://www.twitch.tv/' + process.env.twitch
@@ -49,15 +44,11 @@ if (process.env.slackToken) {
   const slack = new RTMClient(process.env.slackToken)
 
   slack.on('member_joined_channel', async event => {
-    const info = []
-    messages.joined.forEach(e => {
-      info.push(e.replace('${event.user}', event.user))
-    })
-
     try {
-      const random = Math.floor(Math.random() * info.length)
-      slack.sendMessage(info[random], event.channel)
-      console.log(`Slack ${event.channel}\n`.green, info[random])
+      const random = Math.floor(Math.random() * messages.joined.length)
+      const info = messages.joined[random].replace('${event.user}', event.user)
+      slack.sendMessage(info, event.channel)
+      console.log(`Slack ${event.channel}\n`.green, info)
     } catch (error) {
       console.warn(`Slack ${event.channel}\n`.red, error)
     }
