@@ -19,7 +19,13 @@ const index = (text) => {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')))
   }
 
-  if (text.match(/(월|달)/)) {
+  for (const i in define.week) {
+    if (text.match(RegExp(define.week[i] + '요일'))) {
+      date.setDate(date.getDate() + (Number(i) - date.getDay()))
+    }
+  }
+
+  if (text.match(/(월|달)/) && text.replace(/[^{0-9}]/gi, '')) {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'M')
   }
 
