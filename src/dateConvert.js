@@ -29,6 +29,14 @@ const index = (text) => {
     setDate(Number(text.replace(/[^{0-9}]/gi, '')), 'M')
   }
 
+  if (text.includes('주')) {
+    if ((text.match(/다/g) || []).length) {
+      date.setDate(date.getDate() + text.match(/다/g).length * 7)
+    } else if ((text.match(/지/g) || []).length) {
+      date.setDate(date.getDate() - text.match(/지/g).length * 7)
+    }
+  }
+
   if (text.includes('해')) {
     if ((text.match(/다/g) || []).length) {
       date.setDate(date.getFullYear() + text.match(/다/g).length, 'Y')
