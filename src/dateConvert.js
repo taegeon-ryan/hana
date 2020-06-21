@@ -6,9 +6,9 @@ const index = (text) => {
   const date = new Date()
 
   const setDate = (val, type) => {
-    if (text.includes('전')) {
+    if (text.match(/(전|저|지)/)) {
       type === 'Y' ? date.setFullYear(date.getFullYear() - val) : type === 'M' ? date.setMonth(date.getMonth() - val) : date.setDate(date.getDate() - val)
-    } else if (text.match(/(후|뒤)/)) {
+    } else if (text.match(/(후|뒤|다)/)) {
       type === 'Y' ? date.setFullYear(date.getFullYear() + val) : type === 'M' ? date.setMonth(date.getMonth() + val) : date.setDate(date.getDate() + val)
     } else {
       type === 'Y' ? date.setFullYear(val) : type === 'M' ? date.setMonth(val - 1) : date.setDate(val)
@@ -30,19 +30,9 @@ const index = (text) => {
   }
 
   if (text.includes('주')) {
-    if ((text.match(/다/g) || []).length) {
-      date.setDate(date.getDate() + text.match(/다/g).length * 7)
-    } else if ((text.match(/지/g) || []).length) {
-      date.setDate(date.getDate() - text.match(/지/g).length * 7)
-    }
-  }
-
-  if (text.includes('해')) {
-    if ((text.match(/다/g) || []).length) {
-      date.setDate(date.getFullYear() + text.match(/다/g).length, 'Y')
-    } else if ((text.match(/지/g) || []).length) {
-      date.setDate(date.getFullYear() - text.match(/지/g).length, 'Y')
-    }
+    setDate(text.match(/(다|저|지)/g).length * 7)
+  } else if (text.includes('해')) {
+    setDate(text.match(/(다|저|지)/g).length, 'Y')
   }
 
   for (const i in define.dateExp) {
@@ -58,7 +48,9 @@ const index = (text) => {
         date.setDate(date.getFullYear() - 3 + Number(i), 'Y')
       }
     }
-  } else if (text.includes('열흘')) {
+  }
+  
+  if (text.includes('열흘')) {
     setDate(10)
   } else if (text.includes('스무날')) {
     setDate(20)
