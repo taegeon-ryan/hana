@@ -25,15 +25,49 @@ const save = (type, info) => {
 }
 
 const meal = async (date, type) => {
-  let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1, default: `${type}이 없습니다\n` })
+  const embed = {
+    color: 0xf7cac9,
+    fields: []
+  }
+
+  const title = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
+  embed.title = title
+
+  let meal = await school.getMeal({ year: date.getFullYear(), month: date.getMonth() + 1 })
+
   meal = meal[date.getDate()].replace(/[0-9*.]|amp;/gi, '')
 
   if (meal.includes(`[${type}]`)) {
+    // 조식/중식/석식 중 하나만 반환
     const length = meal.indexOf(`[${type}]`)
-    meal = meal.substring(length, meal.indexOf('[', length + 1) !== -1 ? meal.indexOf('[', length + 1) : meal.length)
+    const menu = meal.substring(length, meal.indexOf('[', length + 1) !== -1 ? meal.indexOf('[', length + 1) : meal.length)
+    embed.fields.push({ name: type, value: menu.replace(/\[[\S]*?\]/g, ''), inline: true })
+  } else {
+    // 전체 반환
+    const mealType = ['조식', '중식', '석식']
+    for (const m in mealType) {
+      const length = meal.indexOf(`[${mealType[m]}]`)
+      const menu = meal.substring(length, meal.indexOf('[', length + 1) !== -1 ? meal.indexOf('[', length + 1) : meal.length)
+      embed.fields.push({ name: mealType[m], value: menu.replace(/\[[\S]*?\]/g, ''), inline: true })
+    }
   }
 
-  return meal
+  embed.fields.forEach(element => {
+    if (element.value === '') {
+      element.value = `${type} 데이터가 없습니다.`
+    }
+  })
+
+  return embed
+}
+
+const embed = (info) => {
+  const embed = {
+    color: 0xf7cac9,
+    title: '하나',
+    description: info
+  }
+  return embed
 }
 
 const index = async (text, channel, type) => {
@@ -99,8 +133,8 @@ const index = async (text, channel, type) => {
       } else {
         const date = dateConvert(text)
         school.init(School.Type[data.type], School.Region[data.region], data.schoolCode)
-        info = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${define.week[date.getDay()]})\n`
-        info += await meal(date, match[0])
+        info = await meal(date, match[0])
+        return info
       }
     }
 
@@ -126,8 +160,9 @@ const index = async (text, channel, type) => {
       }
     }
   }
-
-  return info
+  if (info) {
+    return embed(info)
+  }
 }
 
 module.exports = index
